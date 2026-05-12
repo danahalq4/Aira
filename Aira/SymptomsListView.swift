@@ -33,7 +33,7 @@ struct SymptomCardView: View {
                     .fill(Color("card").opacity(0.001)) // tap target alignment
                 Image(systemName: symptom.iconSystemName)
                     .font(.system(size: 22, weight: .regular))
-                    .foregroundColor(Color(symptom.severity.colorAssetName))
+                    .foregroundColor(Color(symptom.severity.colorAssetName)) // ColorG/ColorO/ColorR من Assets
             }
             .frame(width: 36, height: 36)
 
@@ -57,7 +57,7 @@ struct SymptomCardView: View {
                 get: { symptom.isTracked },
                 set: { _ in onToggle() }
             ))
-            .toggleStyle(SwitchToggleStyle(tint: Color("text"))) // بديل عن AccentColor
+            .toggleStyle(SwitchToggleStyle(tint: .accentColor)) // استخدام AccentColor من Assets
             .labelsHidden()
         }
         .padding(12)
@@ -87,3 +87,4 @@ struct SymptomCardView: View {
     .padding()
     .background(Color("background"))
 }
+

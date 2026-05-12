@@ -13,8 +13,31 @@ struct CalendarMonthView: View {
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 6, alignment: .center), count: 7)
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 6) {
+            // زر + مستقل في الأعلى، كبير ومثبت يمين
             HStack {
+                Spacer()
+                Button {
+                    // ضع هنا الإجراء المطلوب عند الضغط على +
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 22, weight: .bold)) // أيقونة كبيرة
+                        .foregroundColor(.white)                 // الأيقونة بيضاء
+                        .frame(width: 42, height: 42)            // زر كبير
+                        .background(
+                            Circle()
+                                .fill(Color.accentColor)         // الخلفية من AccentColor
+                        )
+                }
+                .accessibilityLabel("Add")
+            }
+            .padding(.horizontal, 4)
+
+            // لا مسافة تقريباً بين زر + وباقي التقويم
+            // Spacer(minLength: 0)  // غير ضرورية الآن
+
+            // شريط العنوان مع أسهم التنقل
+            HStack(alignment: .center, spacing: 0) {
                 Button {
                     viewModel.goToPreviousMonth()
                 } label: {
@@ -22,11 +45,15 @@ struct CalendarMonthView: View {
                         .foregroundColor(Color("text"))
                         .padding(8)
                 }
-                Spacer()
+
+                Spacer(minLength: 8)
+
                 Text(viewModel.monthTitle())
                     .font(.headline)
                     .foregroundColor(Color("text"))
-                Spacer()
+
+                Spacer(minLength: 8)
+
                 Button {
                     viewModel.goToNextMonth()
                 } label: {
@@ -35,9 +62,10 @@ struct CalendarMonthView: View {
                         .padding(8)
                 }
             }
+            .padding(.horizontal, 2)
 
-            // Weekday symbols
-            HStack {
+            // عناوين أيام الأسبوع
+            HStack(spacing: 0) {
                 ForEach(viewModel.weekdaySymbols(), id: \.self) { symbol in
                     Text(symbol)
                         .font(.caption)
@@ -46,6 +74,7 @@ struct CalendarMonthView: View {
                 }
             }
 
+            // بطاقة التقويم
             LazyVGrid(columns: columns, spacing: 6) {
                 ForEach(viewModel.daysInMonth(), id: \.self) { date in
                     DayCell(
@@ -78,7 +107,7 @@ struct CalendarMonthView: View {
             ZStack {
                 if isSelected {
                     Circle()
-                        .fill(Color("text")) // استخدام لون النص كبديل لـ Accent
+                        .fill(Color.accentColor) // لون التحديد من Assets
                         .frame(width: 30, height: 30)
                 }
                 Text("\(day)")
@@ -98,3 +127,4 @@ struct CalendarMonthView: View {
         .padding()
         .background(Color("background"))
 }
+

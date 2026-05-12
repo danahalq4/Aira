@@ -218,7 +218,7 @@ private struct TriggerRowView: View {
 
             Text(trigger.level.rawValue)
                 .font(.system(size: 15, weight: .medium))
-                .foregroundColor(trigger.level == .low ? Color("text") : Color("small text"))
+                .foregroundColor(trigger.level == .low ? Color("ColorG") : Color("ColorY"))
         }
     }
 }

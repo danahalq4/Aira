@@ -6,12 +6,11 @@
 //
 
 import SwiftUI
-
 @main
 struct AiraApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView(viewModel: HomeViewModel())
+            RootTabView() 
         }
     }
 }

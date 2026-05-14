@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CalendarMonthView: View {
     @ObservedObject var viewModel: CalendarViewModel
+    var onPlusTapped: (() -> Void)? = nil
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 6, alignment: .center), count: 7)
 
@@ -18,7 +19,7 @@ struct CalendarMonthView: View {
             HStack {
                 Spacer()
                 Button {
-                    // ضع هنا الإجراء المطلوب عند الضغط على +
+                    onPlusTapped?()
                 } label: {
                     Image(systemName: "plus")
                         .font(.system(size: 22, weight: .bold)) // أيقونة كبيرة
@@ -32,9 +33,6 @@ struct CalendarMonthView: View {
                 .accessibilityLabel("Add")
             }
             .padding(.horizontal, 4)
-
-            // لا مسافة تقريباً بين زر + وباقي التقويم
-            // Spacer(minLength: 0)  // غير ضرورية الآن
 
             // شريط العنوان مع أسهم التنقل
             HStack(alignment: .center, spacing: 0) {

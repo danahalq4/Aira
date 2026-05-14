@@ -16,7 +16,9 @@ struct AddSymptomView: View {
     @State private var showOtherPopup = false
     @State private var customSymptoms: [String] = UserDefaults.standard.stringArray(forKey: "customSymptoms") ?? []
 
-    
+    var onSave: (_ selectedNames: Set<String>, _ selectedSeverityIndex: Int, _ startTime: Date, _ endTime: Date) -> Void
+
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
 
     let symptoms = [
@@ -142,6 +144,8 @@ struct AddSymptomView: View {
                         .shadow(color: .black.opacity(colorScheme == .dark ? 0 : 0.08), radius: 8, y: 4)
                     }
                     Button {
+                        onSave(selectedSymptoms, selectedSeverity, startTime, endTime)
+                        dismiss()
                     } label: {
                         Text("Save Symptom")
                             .font(.headline)
@@ -370,11 +374,12 @@ extension Color {
 }
 
 #Preview("Light Mode") {
-    AddSymptomView()
+    AddSymptomView { _,_,_,_ in }
         .preferredColorScheme(.light)
 }
 
 #Preview("Dark Mode") {
-    AddSymptomView()
+    AddSymptomView { _,_,_,_ in }
         .preferredColorScheme(.dark)
 }
+

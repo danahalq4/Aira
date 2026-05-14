@@ -161,6 +161,42 @@ final class SymptomsViewModel: ObservableObject {
         symptoms(on: day).count
     }
 
+    // MARK: - Add APIs
+
+    func add(name: String, severity: Severity, time: Date, on day: Date) {
+        let key = calendar.startOfDay(for: day)
+        let icon = iconForName(name)
+        var list = allSymptomsByDate[key] ?? []
+        let symptom = Symptom(name: name, time: timeWithDay(time, day: key), severity: severity, isTracked: true, iconSystemName: icon)
+        list.append(symptom)
+        allSymptomsByDate[key] = list
+    }
+
+    func addMany(names: [String], severity: Severity, time: Date, on day: Date) {
+        for n in names {
+            add(name: n, severity: severity, time: time, on: day)
+        }
+    }
+
+    private func timeWithDay(_ timeOnly: Date, day: Date) -> Date {
+        let compsTime = calendar.dateComponents([.hour, .minute, .second], from: timeOnly)
+        var compsDay = calendar.dateComponents([.year, .month, .day], from: day)
+        compsDay.hour = compsTime.hour
+        compsDay.minute = compsTime.minute
+        compsDay.second = compsTime.second
+        return calendar.date(from: compsDay) ?? day
+    }
+
+    private func iconForName(_ name: String) -> String {
+        let lower = name.lowercased()
+        if lower.contains("wheez") { return "wind" }
+        if lower.contains("cough") { return "lungs" }
+        if lower.contains("chest") { return "lungs.fill" }
+        if lower.contains("shortness") || lower.contains("breath") { return "lungs.fill" }
+        if lower.contains("fatigue") { return "zzz" }
+        return "star"
+    }
+
     private func seedData() {
         let today = calendar.startOfDay(for: Date())
         let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!

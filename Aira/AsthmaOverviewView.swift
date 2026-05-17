@@ -10,27 +10,33 @@ import SwiftUI
 // MARK: - Root View
 
 struct AsthmaOverviewView: View {
-
+    
     @StateObject private var viewModel = AsthmaOverviewViewModel()
-
+    
     var body: some View {
-        VStack(spacing: 0) {
-            headerView
-
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 16) {
-                    asthmaScoreCard
-                    todayTriggersCard
-                    inhalerReminderCard
+        NavigationStack {
+            
+            VStack(spacing: 0) {
+                headerView
+                
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 16) {
+                        asthmaScoreCard
+                        todayTriggersCard
+                        inhalerReminderCard
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 24)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 16)
-                .padding(.bottom, 24)
             }
+            .background(Color("background").ignoresSafeArea())
+            .onAppear { viewModel.onAppear() }
+            .navigationDestination(isPresented: $viewModel.showAirDetail) {
+            AirQualityDetailView(triggers: viewModel.triggers, score: viewModel.score)
         }
-        .background(Color("background").ignoresSafeArea())
-        .onAppear { viewModel.onAppear() }
     }
+}
 
     // MARK: - Header
 

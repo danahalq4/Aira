@@ -45,10 +45,12 @@ final class AsthmaOverviewViewModel: ObservableObject {
         print("Inhaler reminder tapped")
     }
 
-    func airQualityTapped() {
-        print("Air quality detail tapped")
-    }
+    @Published var showAirDetail: Bool = false
 
+    func airQualityTapped() {
+        showAirDetail = true
+    }
+    
     // MARK: - Private
 
     private func loadData() {
@@ -56,7 +58,7 @@ final class AsthmaOverviewViewModel: ObservableObject {
         let data = AsthmaOverviewData(
             score: 70,
             scoreLabel: "Good",
-            airQualityMessage: "Air is good for breathing",
+            airQualityMessage: "Why is the asthma risk good?",
             triggers: [
                 AsthmaTrigger(name: "Temprature", icon: "thermometer.medium",   level: .high),
                 AsthmaTrigger(name: "Humidity", icon: "drop.fill",   level: .moderate),

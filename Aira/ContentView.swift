@@ -70,9 +70,9 @@ struct SymptomsView: View {
         }
     }
 }
-
-// MARK: - Trends View
-struct TrendsView: View {
+//
+//// MARK: - Trends View
+struct PreTrendsView: View {
     var body: some View {
         ZStack {
             Color(.systemBackground).ignoresSafeArea()

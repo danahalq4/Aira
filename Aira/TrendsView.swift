@@ -2,11 +2,10 @@
 //  TrendsView.swift
 //  Aira
 //
-//  "My Trends" screen – displays a per-day severity-score bar chart
-//  and a collapsible Top Triggers list.
-//  Architecture: MVVM  (drives TrendsViewModel)
+//  Created by Danah AlQahtani on 30/11/1447 AH.
 //
 
+import Foundation
 
 import SwiftUI
 
@@ -15,26 +14,21 @@ struct TrendsView: View {
     @StateObject private var viewModel = TrendsViewModel()
 
     var body: some View {
-
         ZStack {
             Color("background")
                 .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 22) {
 
-                // TITLE
                 Text("My Trends")
                     .font(.system(size: 34, weight: .bold))
                     .foregroundColor(Color("text"))
                     .padding(.top, 55)
 
-                // SEGMENT
                 periodPicker
 
-                // CHART CARD
                 symptomsCard
 
-                // TRIGGERS CARD
                 topTriggersCard
 
                 Spacer()
@@ -42,32 +36,22 @@ struct TrendsView: View {
             .padding(.horizontal, 24)
         }
     }
-}
-
-// MARK: - COMPONENTS
-extension TrendsView {
 
     private var periodPicker: some View {
-
         HStack(spacing: 0) {
-
             ForEach(TrendPeriod.allCases) { period in
-
                 Button {
-
                     viewModel.selectedPeriod = period
-
                 } label: {
-
                     Text(period.rawValue)
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(.system(size: 17, weight: .semibold))
                         .foregroundColor(
                             viewModel.selectedPeriod == period
                             ? Color("ColorB")
                             : Color("small text")
                         )
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
+                        .padding(.vertical, 11)
                         .background(
                             Capsule()
                                 .fill(
@@ -79,130 +63,106 @@ extension TrendsView {
                 }
             }
         }
-        .padding(5)
-        .background(Color.white)
+        .padding(4)
+        .background(Color("card"))
         .clipShape(Capsule())
-        .padding(.horizontal, 40)
+        .padding(.horizontal, 48)
     }
 
-    // MARK: CHART CARD
-
     private var symptomsCard: some View {
-
         VStack(alignment: .leading, spacing: 24) {
 
             HStack {
-
                 Text("Symptoms")
-                    .font(.system(size: 22, weight: .bold))
+                    .font(.system(size: 20, weight: .bold))
                     .foregroundColor(Color("text"))
 
                 Spacer()
 
                 HStack(spacing: 6) {
-
                     Circle()
                         .fill(Color("ColorB"))
                         .frame(width: 8, height: 8)
 
                     Text("SYM")
-                        .font(.system(size: 15))
+                        .font(.system(size: 14))
                         .foregroundColor(Color("small text"))
                 }
             }
 
-            // BARS
-            HStack(alignment: .bottom, spacing: 18) {
-
+            HStack(alignment: .bottom, spacing: 17) {
                 ForEach(viewModel.weeklyData) { item in
-
                     VStack(spacing: 10) {
-
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(
-                                item.isHighSeverity
-                                ? Color("ColorR")
-                                : Color("ColorB")
-                            )
-                            .frame(
-                                width: 28,
-                                height: max(5, item.severity * 145)
-                            )
-                            .opacity(item.severity <= 0.05 ? 0.28 : 1)
+                        RoundedRectangle(cornerRadius: 7)
+                            .fill(item.isHighSeverity ? Color("ColorR") : Color("ColorB"))
+                            .frame(width: 28, height: max(5, item.severity * 145))
+                            .opacity(item.severity <= 0.05 ? 0.25 : 1)
 
                         Text(item.day)
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.system(size: 13, weight: .semibold))
                             .foregroundColor(Color("small text"))
                     }
                 }
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 170)
+            .frame(height: 165)
         }
         .padding(24)
         .background(Color("card"))
-        .cornerRadius(28)
+        .cornerRadius(24)
     }
 
-    // MARK: TRIGGERS CARD
-
     private var topTriggersCard: some View {
-
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: 20) {
 
             HStack {
-
                 Image(systemName: "sparkles")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(Color("text"))
 
                 Text("Top Triggers")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.system(size: 21, weight: .bold))
                     .foregroundColor(Color("text"))
 
                 Spacer()
 
                 Image(systemName: "chevron.up")
+                    .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(Color("small text"))
             }
 
-            VStack(spacing: 22) {
-
+            VStack(spacing: 18) {
                 ForEach(viewModel.topTriggers) { trigger in
-
                     triggerRow(trigger)
                 }
             }
         }
         .padding(24)
         .background(Color("card"))
-        .cornerRadius(28)
+        .cornerRadius(24)
     }
 
-    // MARK: ROW
-
     private func triggerRow(_ trigger: TopTrigger) -> some View {
-
-        HStack(spacing: 16) {
+        HStack(spacing: 14) {
 
             Image(systemName: trigger.icon)
-                .font(.system(size: 23))
+                .font(.system(size: 22, weight: .semibold))
                 .foregroundColor(trigger.iconColor)
                 .frame(width: 28)
 
             Text(trigger.title)
-                .font(.system(size: 18, weight: .medium))
+                .font(.system(size: 17, weight: .medium))
                 .foregroundColor(Color("text"))
-                .frame(width: 130, alignment: .leading)
+                .frame(width: 115, alignment: .leading)
 
             ProgressView(value: trigger.percentage)
                 .tint(Color("ColorB"))
                 .frame(height: 8)
 
             Text("\(Int(trigger.percentage * 100))%")
-                .font(.system(size: 18, weight: .semibold))
+                .font(.system(size: 17, weight: .semibold))
                 .foregroundColor(Color("text"))
-                .frame(width: 50, alignment: .trailing)
+                .frame(width: 42, alignment: .trailing)
         }
     }
 }

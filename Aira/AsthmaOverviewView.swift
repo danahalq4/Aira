@@ -10,27 +10,33 @@ import SwiftUI
 // MARK: - Root View
 
 struct AsthmaOverviewView: View {
-
+    
     @StateObject private var viewModel = AsthmaOverviewViewModel()
-
+    
     var body: some View {
-        VStack(spacing: 0) {
-            headerView
-
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 16) {
-                    asthmaScoreCard
-                    todayTriggersCard
-                    inhalerReminderCard
+        NavigationStack {
+            
+            VStack(spacing: 0) {
+                headerView
+                
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 16) {
+                        asthmaScoreCard
+                        todayTriggersCard
+                        inhalerReminderCard
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 24)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 16)
-                .padding(.bottom, 24)
             }
+            .background(Color("background").ignoresSafeArea())
+            .onAppear { viewModel.onAppear() }
+            .navigationDestination(isPresented: $viewModel.showAirDetail) {
+            AirQualityDetailView(triggers: viewModel.triggers, score: viewModel.score)
         }
-        .background(Color("background").ignoresSafeArea())
-        .onAppear { viewModel.onAppear() }
     }
+}
 
     // MARK: - Header
 
@@ -45,11 +51,7 @@ struct AsthmaOverviewView: View {
                     .foregroundColor(Color("small text"))
             }
             Spacer()
-            Button(action: viewModel.notificationTapped) {
-                Image(systemName: viewModel.hasUnreadNotifications ? "bell.badge" : "bell")
-                    .font(.system(size: 22, weight: .medium))
-                    .foregroundColor(Color("text"))
-            }
+            
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
@@ -61,14 +63,11 @@ struct AsthmaOverviewView: View {
     private var asthmaScoreCard: some View {
         VStack(spacing: 16) {
             HStack {
-                Text("Asthma Score")
+                Text("Asthma Risk")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(Color("text"))
                 Spacer()
-                Button(action: {}) {
-                    Image(systemName: "info.circle")
-                        .foregroundColor(Color("small text"))
-                }
+              
             }
 
             ScoreRingView(
@@ -197,9 +196,10 @@ private struct TriggerRowView: View {
     // يحدد لون الأيقونة حسب الترتيب: الأول G، الثاني Y، الثالث B
     private var highlightColor: Color {
         switch index {
-        case 0: return Color("ColorG") // أخضر من الـ Assets
-        case 1: return Color("ColorY") // أصفر من الـ Assets
-        case 2: return Color("ColorB") // أزرق من الـ Assets
+        case 0: return Color("ColorR")
+        case 1: return Color("ColorB")
+        case 2: return Color("ColorG")
+        case 3: return Color("ColorY")
         default: return Color("text")  // الافتراضي
         }
     }

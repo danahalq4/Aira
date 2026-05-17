@@ -58,9 +58,10 @@ final class AsthmaOverviewViewModel: ObservableObject {
             scoreLabel: "Good",
             airQualityMessage: "Air is good for breathing",
             triggers: [
+                AsthmaTrigger(name: "Temprature", icon: "thermometer.medium",   level: .high),
+                AsthmaTrigger(name: "Humidity", icon: "drop.fill",   level: .moderate),
                 AsthmaTrigger(name: "Pollen",   icon: "leaf.fill",   level: .low),
-                AsthmaTrigger(name: "Dust",     icon: "aqi.low",     level: .low),
-                AsthmaTrigger(name: "Humidity", icon: "drop.fill",   level: .moderate)
+                AsthmaTrigger(name: "Dust",     icon: "aqi.low",     level: .low)
             ],
             inhalerReminderMessage: "Use your inhaler as prescribed"
         )

@@ -57,7 +57,7 @@ struct AsthmaOverviewView: View {
     private var asthmaScoreCard: some View {
         VStack(spacing: 16) {
             HStack {
-                Text("Asthma Score")
+                Text("Asthma Risk")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(Color("text"))
                 Spacer()
@@ -190,9 +190,10 @@ private struct TriggerRowView: View {
     // يحدد لون الأيقونة حسب الترتيب: الأول G، الثاني Y، الثالث B
     private var highlightColor: Color {
         switch index {
-        case 0: return Color("ColorG") // أخضر من الـ Assets
-        case 1: return Color("ColorY") // أصفر من الـ Assets
-        case 2: return Color("ColorB") // أزرق من الـ Assets
+        case 0: return Color("ColorR")
+        case 1: return Color("ColorB")
+        case 2: return Color("ColorG")
+        case 3: return Color("ColorY")
         default: return Color("text")  // الافتراضي
         }
     }

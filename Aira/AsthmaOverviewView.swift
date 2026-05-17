@@ -45,11 +45,7 @@ struct AsthmaOverviewView: View {
                     .foregroundColor(Color("small text"))
             }
             Spacer()
-            Button(action: viewModel.notificationTapped) {
-                Image(systemName: viewModel.hasUnreadNotifications ? "bell.badge" : "bell")
-                    .font(.system(size: 22, weight: .medium))
-                    .foregroundColor(Color("text"))
-            }
+            
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
@@ -65,10 +61,7 @@ struct AsthmaOverviewView: View {
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(Color("text"))
                 Spacer()
-                Button(action: {}) {
-                    Image(systemName: "info.circle")
-                        .foregroundColor(Color("small text"))
-                }
+              
             }
 
             ScoreRingView(

@@ -8,16 +8,25 @@
 import SwiftUI
 
 struct HomeView: View {
-    @ObservedObject var viewModel: HomeViewModel
+
+    @StateObject private var viewModel = HomeViewModel()
     @State private var showingAddSheet = false
 
     var body: some View {
+        let symptomsForDay = viewModel.symptomsVM.symptoms(
+            on: viewModel.calendarVM.selectedDate
+        )
+
         VStack(spacing: 16) {
-            CalendarMonthView(viewModel: viewModel.calendarVM, onPlusTapped: {
-                showingAddSheet = true
-            })
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
+            CalendarMonthView(
+                viewModel: viewModel.calendarVM,
+                onPlusTapped: { showingAddSheet = true },
+                hasSymptoms: { day in
+                    viewModel.symptomsVM.count(on: day) > 0
+                }
+            )
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
 
             HStack {
                 Text(viewModel.selectedDateTitle)
@@ -31,7 +40,7 @@ struct HomeView: View {
             .padding(.horizontal, 16)
 
             SymptomsListView(
-                symptoms: viewModel.symptomsVM.symptoms(on: viewModel.calendarVM.selectedDate),
+                symptoms: symptomsForDay,
                 toggleAction: { symptom in
                     viewModel.symptomsVM.toggleTracked(symptom, on: viewModel.calendarVM.selectedDate)
                 }
@@ -45,12 +54,11 @@ struct HomeView: View {
         .sheet(isPresented: $showingAddSheet) {
             AddSymptomView { selectedNames, selectedSeverityIndex, startTime, _ in
                 let severity = severityFromIndex(selectedSeverityIndex)
-                let date = viewModel.calendarVM.selectedDate
                 viewModel.symptomsVM.addMany(
                     names: Array(selectedNames),
                     severity: severity,
                     time: startTime,
-                    on: date
+                    on: viewModel.calendarVM.selectedDate
                 )
             }
         }
@@ -58,15 +66,15 @@ struct HomeView: View {
 
     private func severityFromIndex(_ idx: Int) -> Severity {
         switch idx {
-        case 0: return .mild   // None -> treat as mild
-        case 1: return .moderate
-        case 2: return .severe
-        default: return .moderate
+        case 0: return .mild
+        case 1: return .mild
+        case 2: return .moderate
+        case 3: return .severe
+        default: return .mild
         }
     }
 }
 
 #Preview {
-    HomeView(viewModel: HomeViewModel())
+    HomeView()
 }
-

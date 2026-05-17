@@ -17,7 +17,7 @@ struct RootTabView: View {
                 }
             
             // Tab 2 - Your Log/Symptoms Page
-            HomeView(viewModel: HomeViewModel())
+            HomeView()
                 .tabItem {
                     Label("Log", systemImage: "clipboard")
                 }
@@ -75,4 +75,3 @@ struct TrendsScreenView: View {
 #Preview {
     RootTabView()
 }
-

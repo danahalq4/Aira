@@ -52,13 +52,7 @@ struct SymptomCardView: View {
             }
 
             Spacer()
-
-            Toggle("", isOn: Binding(
-                get: { symptom.isTracked },
-                set: { _ in onToggle() }
-            ))
-            .toggleStyle(SwitchToggleStyle(tint: .accentColor)) // استخدام AccentColor من Assets
-            .labelsHidden()
+            // تم إزالة الـ Toggle بالكامل
         }
         .padding(12)
         .background(
@@ -87,4 +81,3 @@ struct SymptomCardView: View {
     .padding()
     .background(Color("background"))
 }
-

@@ -98,5 +98,6 @@ struct PreTrendsView: View {
 }
 
 #Preview("Air Screen")      { AsthmaOverviewView() }
-#Preview("Symptoms Screen") { AddSymptomView() }
+#Preview("Symptoms Screen") { AddSymptomView { _, _, _, _ in } }
 #Preview("Trends Screen")   { TrendsView() }
+

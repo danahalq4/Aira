@@ -292,9 +292,7 @@ struct CustomSymptomsPopup: View {
 
     var body: some View {
         ZStack {
-            // Dimmed overlay behind the card (keeps consistency with sheets)
-            Color.black.opacity(0.25).ignoresSafeArea()
-
+            // لا تعتيم خلفي — يظهر فقط البوكس
             // Popup card styled with app assets
             VStack(spacing: 20) {
                 Text("Add Custom Symptom")
@@ -351,6 +349,10 @@ struct CustomSymptomsPopup: View {
                             .frame(maxWidth: .infinity)
                             .frame(height: 44)
                             .background(cardColor)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .stroke(Color("small text").opacity(0.15), lineWidth: 1)
+                            )
                             .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
                 }
@@ -358,7 +360,7 @@ struct CustomSymptomsPopup: View {
             .padding(20)
             .background(cardColor)
             .clipShape(RoundedRectangle(cornerRadius: 22))
-            .shadow(color: Color.black.opacity(0.25), radius: 20, y: 8)
+            .shadow(color: Color("small text").opacity(0.18), radius: 20, y: 8)
             .padding(.horizontal, 24)
         }
     }

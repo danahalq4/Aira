@@ -5,8 +5,6 @@
 //  Created by aeshah mohammed alabdulkarim on 11/05/2026.
 //
 
-
-
 import SwiftUI
 import Combine
 
@@ -21,6 +19,8 @@ final class AsthmaOverviewViewModel: ObservableObject {
     @Published private(set) var triggers: [AsthmaTrigger] = []
     @Published private(set) var inhalerReminderMessage: String = ""
     @Published private(set) var hasUnreadNotifications: Bool = true
+    @Published private(set) var hasActiveAlert: Bool = true
+
 
     // MARK: - Init
 
@@ -60,12 +60,13 @@ final class AsthmaOverviewViewModel: ObservableObject {
             scoreLabel: "Good",
             airQualityMessage: "Why is the asthma risk good?",
             triggers: [
-                AsthmaTrigger(name: "Temprature", icon: "thermometer.medium",   level: .high),
-                AsthmaTrigger(name: "Humidity", icon: "drop.fill",   level: .moderate),
-                AsthmaTrigger(name: "Pollen",   icon: "leaf.fill",   level: .low),
-                AsthmaTrigger(name: "Dust",     icon: "aqi.low",     level: .low)
+                AsthmaTrigger(name: "Temprature", icon: "thermometer.medium", level: .high),
+                AsthmaTrigger(name: "Humidity", icon: "drop.fill", level: .moderate),
+                AsthmaTrigger(name: "Pollen", icon: "leaf.fill", level: .low),
+                AsthmaTrigger(name: "Dust", icon: "aqi.low", level: .low)
             ],
-            inhalerReminderMessage: "Use your inhaler as prescribed"
+            inhalerReminderMessage: "Use your inhaler as prescribed",
+            hasActiveAlert: false
         )
         apply(data)
     }
@@ -78,3 +79,4 @@ final class AsthmaOverviewViewModel: ObservableObject {
         inhalerReminderMessage = data.inhalerReminderMessage
     }
 }
+

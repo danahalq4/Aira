@@ -197,14 +197,13 @@ private struct TriggerRowView: View {
     let trigger: AsthmaTrigger
     let index: Int
 
-    // يحدد لون الأيقونة حسب الترتيب: الأول G، الثاني Y، الثالث B
     private var highlightColor: Color {
         switch index {
         case 0: return Color("ColorR")
         case 1: return Color("ColorB")
         case 2: return Color("ColorG")
         case 3: return Color("ColorY")
-        default: return Color("text")  // الافتراضي
+        default: return Color("text")
         }
     }
 

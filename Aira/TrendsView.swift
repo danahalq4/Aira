@@ -2,10 +2,6 @@
 //  TrendsView.swift
 //  Aira
 //
-//  Created by Danah AlQahtani on 30/11/1447 AH.
-//
-
-import Foundation
 
 import SwiftUI
 
@@ -20,10 +16,16 @@ struct TrendsView: View {
 
             VStack(alignment: .leading, spacing: 22) {
 
-                Text("My Trends")
-                    .font(.system(size: 34, weight: .bold))
-                    .foregroundColor(Color("text"))
-                    .padding(.top, 55)
+                // ── Page Header (matches "Asthma / Overview") ──
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("My")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(Color("text"))
+                    Text("Trends")
+                        .font(.system(size: 16, weight: .regular))
+                        .foregroundColor(Color("small text"))
+                }
+                .padding(.top, 16)
 
                 periodPicker
 
@@ -33,9 +35,11 @@ struct TrendsView: View {
 
                 Spacer()
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, 20)
         }
     }
+
+    // MARK: - Period Picker
 
     private var periodPicker: some View {
         HStack(spacing: 0) {
@@ -44,7 +48,7 @@ struct TrendsView: View {
                     viewModel.selectedPeriod = period
                 } label: {
                     Text(period.rawValue)
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundColor(
                             viewModel.selectedPeriod == period
                             ? Color("ColorB")
@@ -69,12 +73,15 @@ struct TrendsView: View {
         .padding(.horizontal, 48)
     }
 
+    // MARK: - Symptoms Card
+
     private var symptomsCard: some View {
         VStack(alignment: .leading, spacing: 24) {
 
             HStack {
+                // ── Card Title (matches "Asthma Risk" / "Today's Triggers") ──
                 Text("Symptoms")
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(Color("text"))
 
                 Spacer()
@@ -83,9 +90,8 @@ struct TrendsView: View {
                     Circle()
                         .fill(Color("ColorB"))
                         .frame(width: 8, height: 8)
-
                     Text("SYM")
-                        .font(.system(size: 14))
+                        .font(.system(size: 13, weight: .regular))
                         .foregroundColor(Color("small text"))
                 }
             }
@@ -98,8 +104,9 @@ struct TrendsView: View {
                             .frame(width: 28, height: max(5, item.severity * 145))
                             .opacity(item.severity <= 0.05 ? 0.25 : 1)
 
+                        // ── Day labels ──
                         Text(item.day)
-                            .font(.system(size: 13, weight: .semibold))
+                            .font(.system(size: 13, weight: .regular))
                             .foregroundColor(Color("small text"))
                     }
                 }
@@ -107,51 +114,54 @@ struct TrendsView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 165)
         }
-        .padding(24)
+        .padding(20)
         .background(Color("card"))
-        .cornerRadius(24)
+        .cornerRadius(20)
     }
 
+    // MARK: - Top Triggers Card
+
     private var topTriggersCard: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 14) {
 
-            HStack {
+            HStack(spacing: 8) {
                 Image(systemName: "sparkles")
-                    .font(.system(size: 18, weight: .bold))
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(Color("text"))
-
+                // ── Card Title ──
                 Text("Top Triggers")
-                    .font(.system(size: 21, weight: .bold))
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(Color("text"))
 
                 Spacer()
 
                 Image(systemName: "chevron.up")
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.system(size: 13, weight: .medium))
                     .foregroundColor(Color("small text"))
             }
 
-            VStack(spacing: 18) {
+            VStack(spacing: 12) {
                 ForEach(viewModel.topTriggers) { trigger in
                     triggerRow(trigger)
                 }
             }
         }
-        .padding(24)
+        .padding(20)
         .background(Color("card"))
-        .cornerRadius(24)
+        .cornerRadius(20)
     }
 
     private func triggerRow(_ trigger: TopTrigger) -> some View {
-        HStack(spacing: 14) {
+        HStack(spacing: 12) {
+            // تمت إزالة الأيقونة اليسار
+            // Image(systemName: trigger.icon)
+            //     .font(.system(size: 16, weight: .medium))
+            //     .foregroundColor(trigger.iconColor)
+            //     .frame(width: 22)
 
-            Image(systemName: trigger.icon)
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundColor(trigger.iconColor)
-                .frame(width: 28)
-
+            // ── Row text (matches "Temprature", "Humidity") ──
             Text(trigger.title)
-                .font(.system(size: 17, weight: .medium))
+                .font(.system(size: 15, weight: .regular))
                 .foregroundColor(Color("text"))
                 .frame(width: 115, alignment: .leading)
 
@@ -159,8 +169,9 @@ struct TrendsView: View {
                 .tint(Color("ColorB"))
                 .frame(height: 8)
 
+            // ── Value (matches "High", "Moderate") ──
             Text("\(Int(trigger.percentage * 100))%")
-                .font(.system(size: 17, weight: .semibold))
+                .font(.system(size: 15, weight: .medium))
                 .foregroundColor(Color("text"))
                 .frame(width: 42, alignment: .trailing)
         }

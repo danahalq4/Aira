@@ -2,8 +2,6 @@
 //  SymptomsListView.swift
 //  Aira
 //
-//  Created by MVVM.
-//
 
 import SwiftUI
 
@@ -28,36 +26,29 @@ struct SymptomCardView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            // أيقونة محذوفة حسب طلبك
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
+                // ── Symptom name (matches "Temprature", "Humidity") ──
                 Text(symptom.name)
-                    .font(.body.weight(.semibold))
+                    .font(.system(size: 15, weight: .medium))
                     .foregroundColor(Color("text"))
 
                 HStack(spacing: 8) {
+                    // ── Time (small secondary) ──
                     Text(timeString(symptom.time))
+                        .font(.system(size: 13, weight: .regular))
                         .foregroundColor(Color("small text"))
 
-                    // دائرة بلون الشدة بدل نص الشدة
+                    // ── Severity dot فقط بدون نص
                     Circle()
                         .fill(Color(symptom.severity.colorAssetName))
                         .frame(width: 8, height: 8)
                 }
-                .font(.subheadline)
             }
 
             Spacer()
-
-            // إن كنتِ لا تريدين الـ Toggle، نتركه محذوفاً:
-            // Toggle("", isOn: Binding(
-            //     get: { symptom.isTracked },
-            //     set: { _ in onToggle() }
-            // ))
-            // .toggleStyle(SwitchToggleStyle(tint: .accentColor))
-            // .labelsHidden()
         }
-        .padding(12)
+        .padding(14)
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(Color("card"))
@@ -75,9 +66,9 @@ struct SymptomCardView: View {
     VStack {
         SymptomsListView(
             symptoms: [
-                Symptom(name: "Wheezing", time: Date(), severity: .moderate, isTracked: true, iconSystemName: "wind"),
-                Symptom(name: "Cough", time: Date(), severity: .severe, isTracked: true, iconSystemName: "lungs.fill"),
-                Symptom(name: "Fatigue", time: Date(), severity: .mild, isTracked: false, iconSystemName: "zzz")
+                Symptom(name: "Wheezing",  time: Date(), severity: .moderate, isTracked: true,  iconSystemName: "wind"),
+                Symptom(name: "Cough",     time: Date(), severity: .severe,   isTracked: true,  iconSystemName: "lungs.fill"),
+                Symptom(name: "Fatigue",   time: Date(), severity: .mild,     isTracked: false, iconSystemName: "zzz")
             ],
             toggleAction: { _ in }
         )

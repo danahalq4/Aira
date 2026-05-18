@@ -23,7 +23,7 @@ struct RootTabView: View {
                 }
             
             // Tab 3 - Your Trends Page
-            TrendsScreenView()
+            TrendsView()
                 .tabItem {
                     Label("Trends", systemImage: "chart.bar.xaxis")
                 }

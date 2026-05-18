@@ -28,31 +28,34 @@ struct SymptomCardView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            ZStack {
-                Circle()
-                    .fill(Color("card").opacity(0.001)) // tap target alignment
-                Image(systemName: symptom.iconSystemName)
-                    .font(.system(size: 22, weight: .regular))
-                    .foregroundColor(Color(symptom.severity.colorAssetName)) // ColorG/ColorO/ColorR من Assets
-            }
-            .frame(width: 36, height: 36)
+            // أيقونة محذوفة حسب طلبك
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(symptom.name)
                     .font(.body.weight(.semibold))
                     .foregroundColor(Color("text"))
 
-                HStack(spacing: 6) {
+                HStack(spacing: 8) {
                     Text(timeString(symptom.time))
                         .foregroundColor(Color("small text"))
-                    Text(symptom.severity.displayText)
-                        .foregroundColor(Color("small text"))
+
+                    // دائرة بلون الشدة بدل نص الشدة
+                    Circle()
+                        .fill(Color(symptom.severity.colorAssetName))
+                        .frame(width: 8, height: 8)
                 }
                 .font(.subheadline)
             }
 
             Spacer()
-            // تم إزالة الـ Toggle بالكامل
+
+            // إن كنتِ لا تريدين الـ Toggle، نتركه محذوفاً:
+            // Toggle("", isOn: Binding(
+            //     get: { symptom.isTracked },
+            //     set: { _ in onToggle() }
+            // ))
+            // .toggleStyle(SwitchToggleStyle(tint: .accentColor))
+            // .labelsHidden()
         }
         .padding(12)
         .background(
@@ -73,7 +76,8 @@ struct SymptomCardView: View {
         SymptomsListView(
             symptoms: [
                 Symptom(name: "Wheezing", time: Date(), severity: .moderate, isTracked: true, iconSystemName: "wind"),
-                Symptom(name: "Anxiety", time: Date(), severity: .mild, isTracked: false, iconSystemName: "face.smiling")
+                Symptom(name: "Cough", time: Date(), severity: .severe, isTracked: true, iconSystemName: "lungs.fill"),
+                Symptom(name: "Fatigue", time: Date(), severity: .mild, isTracked: false, iconSystemName: "zzz")
             ],
             toggleAction: { _ in }
         )

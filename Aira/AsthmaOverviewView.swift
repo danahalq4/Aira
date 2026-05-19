@@ -10,30 +10,38 @@ import SwiftUI
 // MARK: - Root View
 
 struct AsthmaOverviewView: View {
-
+    
     @StateObject private var viewModel = AsthmaOverviewViewModel()
-
+    
     var body: some View {
-        VStack(spacing: 0) {
-            headerView
-
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 16) {
-                    asthmaScoreCard
-                    todayTriggersCard
-                    inhalerReminderCard
+        NavigationStack {
+            
+            VStack(spacing: 0) {
+                headerView
+                
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 16) {
+                        if viewModel.hasActiveAlert {
+                            inhalerReminderCard
+                        }
+                        asthmaScoreCard
+                        todayTriggersCard
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 24)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 16)
-                .padding(.bottom, 24)
+            }
+            .background(Color("background").ignoresSafeArea())
+            .onAppear { viewModel.onAppear() }
+            .navigationDestination(isPresented: $viewModel.showAirDetail) {
+                AirQualityDetailView(triggers: viewModel.triggers, score: viewModel.score)
             }
         }
-        .background(Color("background").ignoresSafeArea())
-        .onAppear { viewModel.onAppear() }
     }
-
+    
     // MARK: - Header
-
+    
     private var headerView: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
@@ -45,41 +53,34 @@ struct AsthmaOverviewView: View {
                     .foregroundColor(Color("small text"))
             }
             Spacer()
-            Button(action: viewModel.notificationTapped) {
-                Image(systemName: viewModel.hasUnreadNotifications ? "bell.badge" : "bell")
-                    .font(.system(size: 22, weight: .medium))
-                    .foregroundColor(Color("text"))
-            }
+            
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
         .padding(.bottom, 8)
     }
-
+    
     // MARK: - Score Card
-
+    
     private var asthmaScoreCard: some View {
         VStack(spacing: 16) {
             HStack {
-                Text("Asthma Score")
+                Text("Asthma Risk")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(Color("text"))
                 Spacer()
-                Button(action: {}) {
-                    Image(systemName: "info.circle")
-                        .foregroundColor(Color("small text"))
-                }
+                
             }
-
+            
             ScoreRingView(
                 score: viewModel.animatedScore,
                 label: viewModel.scoreLabel
             )
             .frame(width: 160, height: 160)
-
+            
             Divider()
                 .background(Color("small text").opacity(0.2))
-
+            
             Button(action: viewModel.airQualityTapped) {
                 HStack(spacing: 10) {
                     Image(systemName: "wind")
@@ -100,15 +101,15 @@ struct AsthmaOverviewView: View {
                 .fill(Color("card"))
         )
     }
-
+    
     // MARK: - Triggers Card
-
+    
     private var todayTriggersCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("Today's Triggers")
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(Color("text"))
-
+            
             ForEach(Array(viewModel.triggers.enumerated()), id: \.element.id) { index, trigger in
                 TriggerRowView(trigger: trigger, index: index)
             }
@@ -120,9 +121,9 @@ struct AsthmaOverviewView: View {
                 .fill(Color("card"))
         )
     }
-
+    
     // MARK: - Inhaler Reminder Card
-
+    
     private var inhalerReminderCard: some View {
         Button(action: viewModel.inhalerReminderTapped) {
             HStack(spacing: 16) {
@@ -130,7 +131,7 @@ struct AsthmaOverviewView: View {
                     .font(.system(size: 32))
                     .foregroundColor(Color("ColorB")) // البخاخ باللون الأزرق
                     .frame(width: 44)
-
+                
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Inhaler Reminder")
                         .font(.system(size: 15, weight: .semibold))
@@ -140,23 +141,25 @@ struct AsthmaOverviewView: View {
                         .foregroundColor(Color("small text"))
                         .multilineTextAlignment(.leading)
                 }
-
+                
                 Spacer()
-
+                
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(Color("small text"))
             }
+            .foregroundStyle(.primary)
             .padding(20)
-            .background(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(Color("card"))
+            .background(.regularMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.red.opacity(0.4), lineWidth: 1.5)
             )
         }
         .buttonStyle(.plain)
     }
 }
-
 // MARK: - Score Ring
 
 private struct ScoreRingView: View {
@@ -194,13 +197,13 @@ private struct TriggerRowView: View {
     let trigger: AsthmaTrigger
     let index: Int
 
-    // يحدد لون الأيقونة حسب الترتيب: الأول G، الثاني Y، الثالث B
     private var highlightColor: Color {
         switch index {
-        case 0: return Color("ColorG") // أخضر من الـ Assets
-        case 1: return Color("ColorY") // أصفر من الـ Assets
-        case 2: return Color("ColorB") // أزرق من الـ Assets
-        default: return Color("text")  // الافتراضي
+        case 0: return Color("ColorR")
+        case 1: return Color("ColorB")
+        case 2: return Color("ColorG")
+        case 3: return Color("ColorY")
+        default: return Color("text")
         }
     }
 

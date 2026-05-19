@@ -9,6 +9,10 @@ import SwiftUI
 
 struct CalendarMonthView: View {
     @ObservedObject var viewModel: CalendarViewModel
+    var onPlusTapped: (() -> Void)? = nil
+
+    // New: callback to indicate if a given day has symptoms
+    var hasSymptoms: ((Date) -> Bool)? = nil
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 6, alignment: .center), count: 7)
 
@@ -18,7 +22,7 @@ struct CalendarMonthView: View {
             HStack {
                 Spacer()
                 Button {
-                    // ضع هنا الإجراء المطلوب عند الضغط على +
+                    onPlusTapped?()
                 } label: {
                     Image(systemName: "plus")
                         .font(.system(size: 22, weight: .bold)) // أيقونة كبيرة
@@ -32,9 +36,6 @@ struct CalendarMonthView: View {
                 .accessibilityLabel("Add")
             }
             .padding(.horizontal, 4)
-
-            // لا مسافة تقريباً بين زر + وباقي التقويم
-            // Spacer(minLength: 0)  // غير ضرورية الآن
 
             // شريط العنوان مع أسهم التنقل
             HStack(alignment: .center, spacing: 0) {
@@ -80,7 +81,8 @@ struct CalendarMonthView: View {
                     DayCell(
                         date: date,
                         isCurrentMonth: viewModel.isSameMonth(date),
-                        isSelected: viewModel.isSelected(date)
+                        isSelected: viewModel.isSelected(date),
+                        hasSymptoms: hasSymptoms?(date) ?? false
                     )
                     .onTapGesture {
                         viewModel.select(date)
@@ -99,32 +101,40 @@ struct CalendarMonthView: View {
         let date: Date
         let isCurrentMonth: Bool
         let isSelected: Bool
+        let hasSymptoms: Bool
         private let calendar = Calendar.current
 
         var body: some View {
             let day = calendar.component(.day, from: date)
 
-            ZStack {
-                if isSelected {
-                    Circle()
-                        .fill(Color.accentColor) // لون التحديد من Assets
-                        .frame(width: 30, height: 30)
+            VStack(spacing: 4) {
+                ZStack {
+                    if isSelected {
+                        Circle()
+                            .fill(Color.accentColor) // لون التحديد من Assets
+                            .frame(width: 30, height: 30)
+                    }
+                    Text("\(day)")
+                        .font(.body)
+                        .fontWeight(isSelected ? .semibold : .regular)
+                        .foregroundColor(isSelected ? Color.white : Color("text"))
+                        .frame(width: 32, height: 32)
                 }
-                Text("\(day)")
-                    .font(.body)
-                    .fontWeight(isSelected ? .semibold : .regular)
-                    .foregroundColor(isSelected ? Color.white : Color("text"))
-                    .frame(width: 32, height: 32)
+
+                // مؤشر صغير تحت اليوم إذا فيه أعراض
+                Circle()
+                    .fill(Color.accentColor)
+                    .frame(width: 5, height: 5)
+                    .opacity(hasSymptoms ? 1 : 0) // تظهر فقط عند وجود أعراض
             }
-            .frame(maxWidth: .infinity, minHeight: 36)
+            .frame(maxWidth: .infinity, minHeight: 40)
             .opacity(isCurrentMonth ? 1 : 0.4)
         }
     }
 }
 
 #Preview {
-    CalendarMonthView(viewModel: CalendarViewModel())
+    CalendarMonthView(viewModel: CalendarViewModel(), hasSymptoms: { _ in Bool.random() })
         .padding()
         .background(Color("background"))
 }
-

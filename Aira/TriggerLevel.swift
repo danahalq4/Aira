@@ -35,4 +35,6 @@ struct AsthmaOverviewData {
     var airQualityMessage: String
     var triggers: [AsthmaTrigger]
     var inhalerReminderMessage: String
+    var hasActiveAlert: Bool 
+
 }

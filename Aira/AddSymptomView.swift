@@ -2,8 +2,6 @@
 //  AddSymptomView.swift
 //  Aira
 //
-//  Created by Reema Alsaleh on 25/11/1447 AH.
-//
 
 import SwiftUI
 
@@ -14,7 +12,6 @@ struct AddSymptomView: View {
     @State private var endTime = Date()
     @State private var showOtherPopup = false
 
-    // UserDefaults-backed custom symptoms
     @State private var customSymptoms: [String] = UserDefaults.standard.stringArray(forKey: "customSymptoms") ?? []
 
     @State private var showNoSelectionAlert = false
@@ -22,8 +19,8 @@ struct AddSymptomView: View {
     @State private var savedCount = 0
     @State private var isSaving = false
 
-    // Notes
-    @State private var notes: String = ""
+    @State private var pendingDeleteCustom: String?
+    @State private var showDeleteAlert = false
 
     var onSave: (_ selectedNames: Set<String>, _ selectedSeverityIndex: Int, _ startTime: Date, _ endTime: Date) -> Void
 
@@ -43,6 +40,17 @@ struct AddSymptomView: View {
         Color.gray
     ]
 
+    private let defaultSymptomsBase = [
+        "Wheezing", "Cough", "Chest Tightness", "Shortness of Breath", "Fatigue"
+    ]
+    private let otherKey = "Other"
+
+    private var allOptions: [String] {
+        let customs = customSymptoms
+        let defaults = defaultSymptomsBase.filter { !customs.contains($0) }
+        return customs + defaults + [otherKey]
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -51,7 +59,7 @@ struct AddSymptomView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
 
-                        // How are you feeling?
+                        // ── Section title (matches "Today's Triggers" / "Asthma Risk") ──
                         Text("How are you feeling?")
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(primaryText)
@@ -60,27 +68,30 @@ struct AddSymptomView: View {
                             columns: Array(repeating: GridItem(.flexible(), spacing: 18), count: 3),
                             spacing: 18
                         ) {
-                            ForEach(symptoms, id: \.1) { symptom in
-                                SymptomCard(
-                                    imageName: symptom.0,
-                                    title: symptom.1,
-                                    isSelected: selectedSymptoms.contains(symptom.1),
+                            ForEach(allOptions, id: \.self) { title in
+                                SymptomTextCard(
+                                    title: title,
+                                    isSelected: selectedSymptoms.contains(title),
                                     cardColor: cardColor,
                                     selectedColor: Color.accentColor.opacity(0.12),
-                                    textColor: primaryText,
-                                    iconColor: primaryText
+                                    textColor: primaryText
                                 )
                                 .onTapGesture {
-                                    if symptom.1 == "Other" {
+                                    if title == otherKey {
                                         showOtherPopup = true
                                     } else {
-                                        toggleSymptom(symptom.1)
+                                        toggleSymptom(title)
                                     }
+                                }
+                                .onLongPressGesture {
+                                    guard customSymptoms.contains(title) else { return }
+                                    pendingDeleteCustom = title
+                                    showDeleteAlert = true
                                 }
                             }
                         }
 
-                        // Severity
+                        // ── Severity section ──
                         VStack(alignment: .leading, spacing: 14) {
                             Text("Severity")
                                 .font(.system(size: 16, weight: .semibold))
@@ -97,39 +108,10 @@ struct AddSymptomView: View {
                                 }
                             }
 
-                            HStack {
-                                Text("None")
-                                Spacer()
-                                Text("Severe")
-                            }
-                            .font(.system(size: 13, weight: .regular))
-                            .foregroundColor(secondaryText)
+                            // تم إزالة نص "None" و "Severe" حسب طلبك
                         }
 
-                        // Notes (optional)
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Notes (optional)")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(primaryText)
-
-                            ZStack(alignment: .topLeading) {
-                                TextEditor(text: $notes)
-                                    .padding(12)
-                                    .frame(minHeight: 110, alignment: .topLeading)
-                                    .background(cardColor)
-                                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                                    .scrollContentBackground(.hidden)
-
-                                if notes.isEmpty {
-                                    Text("Add a note...")
-                                        .foregroundColor(secondaryText)
-                                        .padding(.top, 18)
-                                        .padding(.leading, 18)
-                                }
-                            }
-                        }
-
-                        // Time
+                        // ── Time section ──
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Time")
                                 .font(.system(size: 16, weight: .semibold))
@@ -141,29 +123,29 @@ struct AddSymptomView: View {
                                     .datePickerStyle(.compact)
 
                                 Text("-")
-                                    .font(.title3)
+                                    .font(.system(size: 15, weight: .regular))
                                     .foregroundColor(primaryText)
 
                                 DatePicker("", selection: $endTime, displayedComponents: .hourAndMinute)
                                     .labelsHidden()
                                     .datePickerStyle(.compact)
                             }
-                            .padding()
+                            .padding(14)
                             .frame(maxWidth: .infinity)
                             .background(cardColor)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             .shadow(color: Color.black.opacity(colorScheme == .dark ? 0 : 0.08), radius: 8, y: 4)
                         }
 
-                        // Selected counter
+                        // ── Selected counter ──
                         HStack {
                             Text("Selected: \(selectedSymptoms.count)")
-                                .font(.system(size: 13))
+                                .font(.system(size: 13, weight: .regular))
                                 .foregroundColor(secondaryText)
                             Spacer()
                         }
 
-                        // Save button
+                        // ── Save button ──
                         Button {
                             guard !selectedSymptoms.isEmpty else {
                                 showNoSelectionAlert = true
@@ -183,7 +165,7 @@ struct AddSymptomView: View {
                             }
                         } label: {
                             Text("Save Symptom")
-                                .font(.system(size: 17, weight: .semibold))
+                                .font(.system(size: 16, weight: .semibold))
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
                                 .padding()
@@ -195,17 +177,16 @@ struct AddSymptomView: View {
                     .padding(24)
                 }
 
-                // Toast
+                // ── Toast ──
                 if showSavedToast {
                     VStack {
                         Spacer()
-                        HStack {
+                        HStack(spacing: 8) {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundColor(.white)
                             Text("Saved \(savedCount) symptom\(savedCount == 1 ? "" : "s")")
                                 .foregroundColor(.white)
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
+                                .font(.system(size: 15, weight: .medium))
                         }
                         .padding(.vertical, 10)
                         .padding(.horizontal, 14)
@@ -216,12 +197,17 @@ struct AddSymptomView: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
+            // ── Navigation title (sheet header) ──
             .navigationTitle("Log Symptom")
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showOtherPopup) {
                 CustomSymptomsPopup(
                     customSymptoms: $customSymptoms,
-                    selectedSymptoms: $selectedSymptoms
+                    selectedSymptoms: $selectedSymptoms,
+                    onImmediateAdd: { name in
+                        selectedSymptoms.insert(name)
+                        onSave([name], selectedSeverity, startTime, endTime)
+                    }
                 )
                 .onDisappear {
                     UserDefaults.standard.set(customSymptoms, forKey: "customSymptoms")
@@ -231,20 +217,32 @@ struct AddSymptomView: View {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text("Please pick one or more symptoms before saving.")
+                    .font(.system(size: 15, weight: .regular))
+            }
+            .alert("Delete symptom?", isPresented: $showDeleteAlert) {
+                Button("Delete", role: .destructive) {
+                    if let name = pendingDeleteCustom {
+                        selectedSymptoms.remove(name)
+                        customSymptoms.removeAll { $0 == name }
+                        UserDefaults.standard.set(customSymptoms, forKey: "customSymptoms")
+                    }
+                    pendingDeleteCustom = nil
+                }
+                Button("Cancel", role: .cancel) {
+                    pendingDeleteCustom = nil
+                }
+            } message: {
+                if let name = pendingDeleteCustom {
+                    Text("Remove \"\(name)\" from your custom symptoms?")
+                        .font(.system(size: 15, weight: .regular))
+                } else {
+                    Text("")
+                }
             }
         }
     }
 
-    private let symptoms = [
-        ("wheezing", "Wheezing"),
-        ("cough",    "Cough"),
-        ("chest",    "Chest Tightness"),
-        ("attack",   "Shortness of Breath"),
-        ("fatigue",  "Fatigue"),
-        ("otherDots","Other")
-    ]
-
-    func toggleSymptom(_ symptom: String) {
+    private func toggleSymptom(_ symptom: String) {
         if selectedSymptoms.contains(symptom) {
             selectedSymptoms.remove(symptom)
         } else {
@@ -258,144 +256,116 @@ struct AddSymptomView: View {
 struct CustomSymptomsPopup: View {
     @Binding var customSymptoms: [String]
     @Binding var selectedSymptoms: Set<String>
-    @State private var symptomToDelete: String?
-    @State private var showDeleteAlert = false
+    var onImmediateAdd: ((String) -> Void)? = nil
+
     @State private var newSymptom: String = ""
     @Environment(\.dismiss) private var dismiss
 
+    private var backgroundColor: Color { Color("background") }
+    private var cardColor: Color       { Color("card") }
+    private var primaryText: Color     { Color("text") }
+    private var secondaryText: Color   { Color("small text") }
+
     var body: some View {
-        VStack(spacing: 24) {
-            Text("Add Custom Symptom")
-                .font(.title2)
-                .fontWeight(.bold)
+        ZStack {
+            VStack(spacing: 20) {
+                // ── Popup title ──
+                Text("Add Custom Symptom")
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(primaryText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-            VStack(alignment: .leading, spacing: 14) {
-                Text("Past Symptoms")
-                    .font(.headline)
-
-                LazyVGrid(
-                    columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: 2),
-                    spacing: 16
-                ) {
-                    ForEach(customSymptoms, id: \.self) { symptom in
-                        Text(symptom)
-                            .onLongPressGesture {
-                                symptomToDelete = symptom
-                                showDeleteAlert  = true
-                            }
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 70)
-                            .background(Color("card"))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 22)
-                                    .stroke(
-                                        selectedSymptoms.contains(symptom) ? Color.accentColor : Color.clear,
-                                        lineWidth: 2
-                                    )
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: 22))
-                            .onTapGesture {
-                                if selectedSymptoms.contains(symptom) {
-                                    selectedSymptoms.remove(symptom)
-                                } else {
-                                    selectedSymptoms.insert(symptom)
-                                }
-                            }
+                TextField("Add Custom Symptom...", text: $newSymptom, axis: .vertical)
+                    .font(.system(size: 15, weight: .regular))
+                    .padding()
+                    .frame(minHeight: 90, alignment: .topLeading)
+                    .background(cardColor)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .overlay(alignment: .bottomTrailing) {
+                        Text("\(newSymptom.count)/100")
+                            .font(.system(size: 13, weight: .regular))
+                            .foregroundColor(secondaryText)
+                            .padding()
                     }
-                }
-                .alert("Delete Symptom?", isPresented: $showDeleteAlert) {
-                    Button("Delete", role: .destructive) {
-                        if let toDelete = symptomToDelete {
-                            customSymptoms.removeAll { $0 == toDelete }
-                            selectedSymptoms.remove(toDelete)
+                    .onChange(of: newSymptom) { _, value in
+                        if value.count > 100 { newSymptom = String(value.prefix(100)) }
+                    }
+
+                HStack(spacing: 16) {
+                    Button {
+                        let trimmed = newSymptom.trimmingCharacters(in: .whitespacesAndNewlines)
+                        guard !trimmed.isEmpty else { return }
+                        if !customSymptoms.contains(trimmed) {
+                            customSymptoms.append(trimmed)
                             UserDefaults.standard.set(customSymptoms, forKey: "customSymptoms")
                         }
+                        selectedSymptoms.insert(trimmed)
+                        onImmediateAdd?(trimmed)
+                        newSymptom = ""
+                        dismiss()
+                    } label: {
+                        Text("Save")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 44)
+                            .background(Color.accentColor)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
-                    Button("Cancel", role: .cancel) { }
+
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text("Cancel")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(primaryText)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 44)
+                            .background(cardColor)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .stroke(Color("small text").opacity(0.15), lineWidth: 1)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
                 }
             }
-
-            TextField("Add Custom Symptom...", text: $newSymptom, axis: .vertical)
-                .padding()
-                .frame(minHeight: 90, alignment: .topLeading)
-                .background(Color("card"))
-                .clipShape(RoundedRectangle(cornerRadius: 22))
-                .overlay(alignment: .bottomTrailing) {
-                    Text("\(newSymptom.count)/100")
-                        .foregroundColor(Color("small text"))
-                        .padding()
-                }
-                .onChange(of: newSymptom) { _, value in
-                    if value.count > 100 { newSymptom = String(value.prefix(100)) }
-                }
-
-            Button("Save") {
-                let trimmed = newSymptom.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !trimmed.isEmpty, !customSymptoms.contains(trimmed) else { return }
-                customSymptoms.append(trimmed)
-                UserDefaults.standard.set(customSymptoms, forKey: "customSymptoms")
-                selectedSymptoms.insert(trimmed)
-                newSymptom = ""
-            }
-            .font(.headline)
-            .frame(width: 120, height: 44)
-            .background(Color("card"))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
-
-            Button("Cancel") { dismiss() }
-                .font(.headline)
-                .frame(width: 120, height: 44)
-                .background(Color("card"))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-
-            Spacer()
+            .padding(20)
+            .background(cardColor)
+            .clipShape(RoundedRectangle(cornerRadius: 22))
+            .shadow(color: Color("small text").opacity(0.18), radius: 20, y: 8)
+            .padding(.horizontal, 24)
         }
-        .padding(28)
-        .background(Color.black.opacity(0.25))
     }
 }
 
-// MARK: - SymptomCard
+// MARK: - SymptomTextCard
 
-struct SymptomCard: View {
-    let imageName: String
+struct SymptomTextCard: View {
     let title: String
     let isSelected: Bool
     let cardColor: Color
     let selectedColor: Color
     let textColor: Color
-    let iconColor: Color
-
-    var iconSize: CGFloat { imageName == "chest" ? 65 : 52 }
 
     var body: some View {
-        VStack(spacing: 14) {
-            Image(imageName)
-                .renderingMode(.template)
-                .resizable()
-                .scaledToFit()
-                .frame(width: iconSize, height: iconSize)
-                .foregroundColor(iconColor)
-
-            Text(title)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundColor(textColor)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
-                .minimumScaleFactor(0.7)
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 120)
-        .background(isSelected ? selectedColor : cardColor)
-        .overlay(
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(isSelected ? Color.accentColor : Color.clear, lineWidth: 2.5)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: 18))
-        .shadow(color: Color.black.opacity(0.08), radius: 8, y: 4)
+        Text(title)
+            .font(.system(size: 15, weight: .medium))
+            .foregroundColor(textColor)
+            .multilineTextAlignment(.leading)
+            .lineLimit(2)
+            .minimumScaleFactor(0.8)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(height: 80, alignment: .leading)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(isSelected ? selectedColor : cardColor)
+            .overlay(
+                RoundedRectangle(cornerRadius: 18)
+                    .stroke(isSelected ? Color.accentColor : Color.clear, lineWidth: 2.5)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 18))
+            .shadow(color: Color.black.opacity(0.08), radius: 8, y: 4)
     }
 }
 

@@ -2,8 +2,6 @@
 //  SymptomsListView.swift
 //  Aira
 //
-//  Created by MVVM.
-//
 
 import SwiftUI
 
@@ -28,33 +26,29 @@ struct SymptomCardView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            ZStack {
-                Circle()
-                    .fill(Color("card").opacity(0.001)) // tap target alignment
-                Image(systemName: symptom.iconSystemName)
-                    .font(.system(size: 22, weight: .regular))
-                    .foregroundColor(Color(symptom.severity.colorAssetName)) // ColorG/ColorO/ColorR من Assets
-            }
-            .frame(width: 36, height: 36)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
+                // ── Symptom name (matches "Temprature", "Humidity") ──
                 Text(symptom.name)
-                    .font(.body.weight(.semibold))
+                    .font(.system(size: 15, weight: .medium))
                     .foregroundColor(Color("text"))
 
-                HStack(spacing: 6) {
+                HStack(spacing: 8) {
+                    // ── Time (small secondary) ──
                     Text(timeString(symptom.time))
+                        .font(.system(size: 13, weight: .regular))
                         .foregroundColor(Color("small text"))
-                    Text(symptom.severity.displayText)
-                        .foregroundColor(Color("small text"))
+
+                    // ── Severity dot فقط بدون نص
+                    Circle()
+                        .fill(Color(symptom.severity.colorAssetName))
+                        .frame(width: 8, height: 8)
                 }
-                .font(.subheadline)
             }
 
             Spacer()
-            // تم إزالة الـ Toggle بالكامل
         }
-        .padding(12)
+        .padding(14)
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(Color("card"))
@@ -72,8 +66,9 @@ struct SymptomCardView: View {
     VStack {
         SymptomsListView(
             symptoms: [
-                Symptom(name: "Wheezing", time: Date(), severity: .moderate, isTracked: true, iconSystemName: "wind"),
-                Symptom(name: "Anxiety", time: Date(), severity: .mild, isTracked: false, iconSystemName: "face.smiling")
+                Symptom(name: "Wheezing",  time: Date(), severity: .moderate, isTracked: true,  iconSystemName: "wind"),
+                Symptom(name: "Cough",     time: Date(), severity: .severe,   isTracked: true,  iconSystemName: "lungs.fill"),
+                Symptom(name: "Fatigue",   time: Date(), severity: .mild,     isTracked: false, iconSystemName: "zzz")
             ],
             toggleAction: { _ in }
         )

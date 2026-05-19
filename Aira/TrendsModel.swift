@@ -13,8 +13,6 @@ import SwiftUI
 
 enum TrendPeriod: String, CaseIterable, Identifiable {
     case week = "Week"
-    case month = "Month"
-    case threeMonths = "3 Mo"
 
     var id: String { rawValue }
 }

@@ -30,10 +30,18 @@ struct AddSymptomView: View {
 
     let severities = [
         Color(hex: "56AE59"),
+        Color(hex: "9BE564"),
         Color(hex: "FDCA06"),
         Color(hex: "F87B1E"),
-        Color.red,
-        Color.gray
+        Color.red
+    ]
+
+    let severityLabels = [
+        "None",
+        "Mild",
+        "Moderate",
+        "Severe",
+        "Very Severe"
     ]
 
     var backgroundColor: Color {
@@ -89,32 +97,36 @@ struct AddSymptomView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 18) {
+                        
                         Text("Severity")
                             .font(.title2)
                             .fontWeight(.bold)
                             .foregroundColor(textColor)
+                        
 
-                        HStack(spacing: 28) {
+                        HStack(alignment: .bottom, spacing: 14) {
                             ForEach(0..<severities.count, id: \.self) { index in
-                                SeverityCircle(
-                                    color: severities[index],
-                                    isSelected: selectedSeverity == index,
-                                    innerStrokeColor: severityInnerStrokeColor
-                                )
-                                .onTapGesture {
-                                    selectedSeverity = index
+                                VStack(spacing: 8) {
+                                    SeverityCircle(
+                                        color: severities[index],
+                                        isSelected: selectedSeverity == index,
+                                        innerStrokeColor: severityInnerStrokeColor,
+                                        size: CGFloat(40 + index * 10)
+                                    )
+                                    .onTapGesture {
+                                        selectedSeverity = index
+                                    }
+
+                                    Text(severityLabels[index])
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(.gray)
+                                        .multilineTextAlignment(.center)
+                                        .frame(height: 32)
                                 }
                             }
                         }
-
-                        HStack {
-                            Text("None")
-                            Spacer()
-                            Text("Severe")
-                        }
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                    }
+                        .frame(maxWidth: .infinity, alignment: .center)                    }
 
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Time")
@@ -337,20 +349,21 @@ struct SeverityCircle: View {
     let color: Color
     let isSelected: Bool
     let innerStrokeColor: Color
+    let size: CGFloat
 
     var body: some View {
         Circle()
             .fill(color)
-            .frame(width: 46, height: 46)
+            .frame(width: size, height: size)
             .overlay(
                 Circle()
                     .stroke(isSelected ? color : Color.clear, lineWidth: 4)
-                    .frame(width: 58, height: 58)
+                    .frame(width: size + 12, height: size + 12)
             )
             .overlay(
                 Circle()
                     .stroke(isSelected ? innerStrokeColor : Color.clear, lineWidth: 3)
-                    .frame(width: 50, height: 50)
+                    .frame(width: size + 4, height: size + 4)
             )
     }
 }

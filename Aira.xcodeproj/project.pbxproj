@@ -72,6 +72,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		450BD5C72FBE167C0028A02E /* Exceptions for "Aira" folder in "AiraWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SymptomLog.swift,
+				"WatchConnectivityManager .swift",
+			);
+			target = 45DABC272FBC8BDB00C3A8C1 /* AiraWatch Watch App */;
+		};
 		CEE023342FBC8F8900D6EFAC /* Exceptions for "Aira" folder in "Aira" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -101,6 +109,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				CEE023342FBC8F8900D6EFAC /* Exceptions for "Aira" folder in "Aira" target */,
+				450BD5C72FBE167C0028A02E /* Exceptions for "Aira" folder in "AiraWatch Watch App" target */,
 			);
 			path = Aira;
 			sourceTree = "<group>";

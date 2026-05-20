@@ -15,6 +15,7 @@
 //
 import SwiftUI
 import Combine
+import SwiftData
 
 #if os(watchOS)
 
@@ -52,6 +53,7 @@ final class AsthmaOverviewViewModel: ObservableObject {
 }
 
 struct AsthmaWatchOverviewView: View {
+    @Environment(\.modelContext) private var modelContext
     @State private var showSymptomLog = false
     @ObservedObject var viewModel: AsthmaOverviewViewModel
 
@@ -101,7 +103,24 @@ struct AsthmaWatchOverviewView: View {
             .padding(.trailing, 4)
         }
         .sheet(isPresented: $showSymptomLog) {
-            WatchSymptomsView()
+            WatchSymptomsView { symptom, severityIndex in
+                
+                let severityLabels = ["Moderate", "Severe", "Very Severe"]
+
+                let newLog = SymptomLog(
+                    date: Date(),
+                    name: symptom,
+                    severityRaw: severityLabels[severityIndex]
+                )
+
+                modelContext.insert(newLog)
+
+                do {
+                    try modelContext.save()
+                } catch {
+                    print("Failed to save watch symptom:", error)
+                }
+            }
         } }
 
 }

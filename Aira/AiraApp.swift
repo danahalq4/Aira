@@ -22,8 +22,21 @@ import SwiftData
 struct AiraApp: App {
     var body: some Scene {
         WindowGroup {
-            RootTabView()
+            RootView()
         }
         .modelContainer(for: [SymptomLog.self])
+    }
+}
+
+struct RootView: View {
+    @Environment(\.modelContext) private var modelContext
+
+    var body: some View {
+        RootTabView()
+            .onAppear {
+                _ = WatchConnectivityManager.shared
+                WatchConnectivityManager.shared.modelContext = modelContext
+                print("IPHONE WC MANAGER CONNECTED")
+            }
     }
 }

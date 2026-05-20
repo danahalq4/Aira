@@ -4,16 +4,34 @@
 //
 
 import SwiftUI
-
+import SwiftData
 struct HomeView: View {
-
+    @Query private var symptomLogs: [SymptomLog]
     @StateObject private var viewModel = HomeViewModel()
     @State private var showingAddSheet = false
 
     var body: some View {
-        let symptomsForDay = viewModel.symptomsVM.symptoms(
+        let phoneSymptoms = viewModel.symptomsVM.symptoms(
             on: viewModel.calendarVM.selectedDate
         )
+
+        let watchSymptoms = symptomLogs
+            .filter {
+                Calendar.current.isDate($0.date, inSameDayAs: viewModel.calendarVM.selectedDate)
+            }
+            .compactMap { log -> Symptom? in
+                guard let name = log.name else { return nil }
+
+                return Symptom(
+                    name: name,
+                    time: log.date,
+                    severity: severityFromRaw(log.severityRaw),
+                    isTracked: true,
+                    iconSystemName: "lungs.fill"
+                )
+            }
+
+        let symptomsForDay = phoneSymptoms + watchSymptoms
 
         VStack(spacing: 0) {
 
@@ -40,7 +58,10 @@ struct HomeView: View {
                         viewModel: viewModel.calendarVM,
                         onPlusTapped: { showingAddSheet = true },
                         hasSymptoms: { day in
-                            viewModel.symptomsVM.count(on: day) > 0
+                            viewModel.symptomsVM.count(on: day) > 0 ||
+                            symptomLogs.contains { log in
+                                Calendar.current.isDate(log.date, inSameDayAs: day)
+                            }
                         }
                     )
                     .padding(.horizontal, 16)
@@ -95,6 +116,18 @@ struct HomeView: View {
         case 2: return .moderate
         case 3: return .severe
         default: return .mild
+        }
+    }
+    private func severityFromRaw(_ raw: String?) -> Severity {
+        switch raw {
+        case "Moderate":
+            return .mild
+        case "Severe":
+            return .moderate
+        case "Very Severe":
+            return .severe
+        default:
+            return .mild
         }
     }
 }

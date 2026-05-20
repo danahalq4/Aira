@@ -19,9 +19,9 @@
 //  Aira Watch App
 //
 import SwiftUI
-
+import SwiftData
 struct WatchSymptomsView: View {
-    
+    @Environment(\.modelContext) private var modelContext
     @State private var selectedSymptom: String? = nil
     @State private var selectedSeverity: Int? = nil
     @Environment(\.dismiss) private var dismiss
@@ -129,30 +129,37 @@ struct WatchSymptomsView: View {
     }
     
     private var saveButton: some View {
-            Button {
-                onSave(selectedSymptom!, selectedSeverity!)
-                
-               
-                dismiss()
-            } label: {
+        Button {
+            guard let symptom = selectedSymptom,
+                  let severityIndex = selectedSeverity else { return }
+
+            let severityLabels = ["Moderate", "Severe", "Very Severe"]
+            let severity = severityLabels[severityIndex]
+
+            WatchConnectivityManager.shared.sendSymptomToPhone(
+                symptom: symptom,
+                severity: severity
+            )
+
+            dismiss()
+        } label: {
             Text("Save Entry")
                 .font(.system(size: 24, weight: .bold))
                 .foregroundStyle(.primary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                                .background(.thinMaterial)
-                                .clipShape(Capsule())
-                                .overlay {
-                                    Capsule()
-                                        .stroke(.white.opacity(0.18), lineWidth: 1)
-                                }
+                .background(.thinMaterial)
+                .clipShape(Capsule())
+                .overlay {
+                    Capsule()
+                        .stroke(.white.opacity(0.18), lineWidth: 1)
+                }
         }
         .buttonStyle(.plain)
         .padding(.top, 4)
-        .disabled(selectedSymptom == nil || selectedSeverity == nil) // Disables save until both are chosen!
-                .opacity((selectedSymptom == nil || selectedSeverity == nil) ? 0.6 : 1.0)
-    }
-}
+        .disabled(selectedSymptom == nil || selectedSeverity == nil)
+        .opacity((selectedSymptom == nil || selectedSeverity == nil) ? 0.6 : 1.0)
+    }}
 
 // MARK: - Symptom Model
 

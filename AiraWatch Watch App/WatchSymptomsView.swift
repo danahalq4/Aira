@@ -28,18 +28,17 @@ struct WatchSymptomsView: View {
     var onSave: (_ symptom: String, _ severityIndex: Int) -> Void = { _, _ in }
     
     private let symptoms: [WatchSymptomOption] = [
-        .init(name: "Fatigue", icon: "brain.head.profile"),
-        .init(name: "Wheeze", icon: "wind"),
-        .init(name: "Cough", icon: "head.profile.arrow.forward.and.visionpro"),
-        .init(name: "Chest", icon: "lungs.fill"),
-        .init(name: "Breath", icon: "figure.run")
+        .init(name: "Wheezing"),
+        .init(name: "Cough"),
+        .init(name: "Chest Tightness"),
+        .init(name: "Shortness of Breath"),
+        .init(name: "Fatigue")
     ]
     
     private let severities: [Color] = [
-        .yellow,
-        .orange,
-        .red
-    ]
+        Color("ColorY"),
+                Color("ColorO"),
+                Color("ColorR")    ]
     
     var body: some View {
         TabView {
@@ -78,22 +77,23 @@ struct WatchSymptomsView: View {
     private var symptomsScrollView: some View {
             ScrollView(.vertical, showsIndicators: true) {
                 LazyVGrid(
+                    // CHANGED: Only 1 column now so boxes can stretch wide
                     columns: [
-                        GridItem(.flexible(), spacing: 8),
                         GridItem(.flexible(), spacing: 8)
                     ],
                     spacing: 8
                 ) {
                     ForEach(symptoms) { symptom in
                         WatchSymptomCard(
-                                symptom: symptom,
-                                isSelected: selectedSymptom == symptom.name
-                            )
-                        .onTapGesture {selectedSymptom = symptom.name
+                            symptom: symptom,
+                            isSelected: selectedSymptom == symptom.name
+                        )
+                        .onTapGesture {
+                            selectedSymptom = symptom.name
                         }
                     }
                 }
-                .padding(.horizontal, 2)
+                .padding(.horizontal, 6) // Slightly tweaked for watch edge comfort
                 .padding(.bottom, 8)
             }
         }
@@ -158,9 +158,7 @@ struct WatchSymptomsView: View {
 
 struct WatchSymptomOption: Identifiable {
     let id = UUID()
-    let name: String
-    let icon: String
-}
+    let name: String}
 
 // MARK: - Symptom Card
 struct WatchSymptomCard: View {
@@ -169,19 +167,7 @@ struct WatchSymptomCard: View {
     
     var body: some View {
         VStack(spacing: 8) {
-            ZStack {
-                Circle()
-                    // Changes from a plain glass background to a solid blue/tint fill when active
-                    .fill(.thinMaterial) // Keep glass background stable
-                    .background(isSelected ? Color.accentColor : Color.clear) // Layer color underneath if active
-                    .clipShape(Circle())
-                    .frame(width: 44, height: 44)
-                
-                Image(systemName: symptom.icon)
-                    // Makes the icon larger and turns it white when selected for high contrast
-                    .font(.system(size: isSelected ? 24 : 20, weight: isSelected ? .bold : .regular))
-                    .foregroundStyle(isSelected ? .white : .primary)
-            }
+           
             
             Text(symptom.name)
                 // Bolds the text label slightly when selected

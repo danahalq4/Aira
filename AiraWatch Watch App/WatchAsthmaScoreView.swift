@@ -50,14 +50,13 @@ final class AsthmaOverviewViewModel: ObservableObject {
         // Simulate any setup/refresh work as needed for previews/testing
     }
 }
-#endif
 
 struct AsthmaWatchOverviewView: View {
     @State private var showSymptomLog = false
     @ObservedObject var viewModel: AsthmaOverviewViewModel
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        ZStack {
             VStack(spacing: 17) {
                 
                 Text("Asthma Score")
@@ -147,7 +146,7 @@ private struct ScoreRingWatchView: View {
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(.secondary)
             }
-        }
+        }.padding()
     }
 }
 
@@ -155,3 +154,4 @@ private struct ScoreRingWatchView: View {
     AsthmaWatchOverviewView(viewModel: AsthmaOverviewViewModel())
 }
 
+#endif

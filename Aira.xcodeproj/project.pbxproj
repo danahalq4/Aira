@@ -416,6 +416,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aira/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app uses Health data to support asthma monitoring.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Aira saves asthma-related health information.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Aira uses your location to check air quality and pollen near you.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -453,6 +454,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aira/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app uses Health data to support asthma monitoring.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Aira saves asthma-related health information.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Aira uses your location to check air quality and pollen near you.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

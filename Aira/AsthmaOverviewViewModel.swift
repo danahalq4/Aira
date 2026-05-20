@@ -85,10 +85,9 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
         // Weather
         if let w = weather {
-            input.temperatureCelsius = w.temperatureCelsius
-            input.humidity           = w.humidity
-        }
-
+            input.temperature_2m = w.temperature_2m
+            input.relative_humidity_2m = Double(w.relative_humidity_2m)
+            }
         // Pollen
         if let p = pollen {
             input.pollenCount = p.dominant
@@ -158,8 +157,8 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
     private func applySampleData() {
         let sampleInput = RiskInput(
-            temperatureCelsius: 30,
-            humidity: 0.55,
+            temperature_2m: 30,
+            relative_humidity_2m: 55,
             pollenCount: 35,
             aqi: 48,
             sleepHours: nil,

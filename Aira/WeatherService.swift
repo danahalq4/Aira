@@ -3,21 +3,23 @@
 //  Aira
 //
 
-import WeatherKit
+import Foundation
 import CoreLocation
 
-struct WeatherData {
+struct WeatherData: Codable {
 
-    let temperatureCelsius: Double
-    let humidity: Double
-    let condition: String
+    let temperature_2m: Double
+    let relative_humidity_2m: Int
+}
+
+struct OpenMeteoResponse: Codable {
+
+    let current: WeatherData
 }
 
 final class WeatherService {
 
     static let shared = WeatherService()
-
-    private let service = WeatherKit.WeatherService.shared
 
     private init() {}
 
@@ -27,25 +29,24 @@ final class WeatherService {
               location.coordinate.latitude,
               location.coordinate.longitude)
 
-        let weather =
-        try await service.weather(for: location)
+        let latitude = location.coordinate.latitude
+        let longitude = location.coordinate.longitude
 
-        let current = weather.currentWeather
+        let urlString =
+        "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&current=temperature_2m,relative_humidity_2m"
 
-        let temp =
-        current.temperature.converted(to: .celsius).value
+        guard let url = URL(string: urlString) else {
+            throw URLError(.badURL)
+        }
 
-        let humidity =
-        current.humidity
+        let (data, _) = try await URLSession.shared.data(from: url)
 
-        print("🌤 TEMP:", temp)
-        print("💧 HUMIDITY:", humidity)
-        print("☁️ CONDITION:", current.condition.description)
+        let decoded =
+        try JSONDecoder().decode(OpenMeteoResponse.self, from: data)
 
-        return WeatherData(
-            temperatureCelsius: temp,
-            humidity: humidity,
-            condition: current.condition.description
-        )
+        print("🌤 TEMP:", decoded.current.temperature_2m)
+        print("💧 HUMIDITY:", decoded.current.relative_humidity_2m)
+
+        return decoded.current
     }
 }

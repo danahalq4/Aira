@@ -9,8 +9,8 @@ import Foundation
 
 struct RiskInput {
     // Environment
-    var temperatureCelsius: Double?
-    var humidity: Double?           // 0–1
+    var temperature_2m: Double?
+    var relative_humidity_2m: Double?           // 0–1
     var pollenCount: Int?           // dominant grains/m³
     var aqi: Int?
 
@@ -56,7 +56,7 @@ enum RiskScoreEngine {
         var totalDeduction = 0
 
         // ── 1. Temperature (max –20) ──────────────────────────────
-        if let temp = input.temperatureCelsius {
+        if let temp = input.temperature_2m {
             let (level, reason, deduction) = evaluateTemperature(temp)
             triggers.append(RiskTrigger(
                 name: "Temperature",
@@ -70,8 +70,8 @@ enum RiskScoreEngine {
         }
 
         // ── 2. Humidity (max –15) ─────────────────────────────────
-        if let hum = input.humidity {
-            let pct = hum * 100
+        if let hum = input.relative_humidity_2m {
+            let pct = hum
             let (level, reason, deduction) = evaluateHumidity(pct)
             triggers.append(RiskTrigger(
                 name: "Humidity",

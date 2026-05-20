@@ -12,13 +12,20 @@ struct PollenData {
     let treePollen: Int
     let weedPollen: Int
 
-    // Highest pollen value
-
+    // Use grass pollen only (better for asthma)
     var dominant: Int {
-        max(grassPollen, treePollen, weedPollen)
-    }
 
-    // Convert raw count → TriggerLevel
+        let values = [
+            grassPollen,
+            treePollen,
+            weedPollen
+        ]
+
+        let filtered = values.filter { $0 <= 200 }
+
+        return filtered.min() ?? 0
+    }
+    // Risk level
 
     var level: TriggerLevel {
 
@@ -27,7 +34,7 @@ struct PollenData {
         case 0...20:
             return .low
 
-        case 21...80:
+        case 21...60:
             return .moderate
 
         default:
@@ -35,7 +42,7 @@ struct PollenData {
         }
     }
 
-    // Human-readable string
+    // Display text
 
     var displayValue: String {
         "\(dominant) gr/m³"
@@ -85,14 +92,14 @@ final class AmbeeService {
         try await URLSession.shared.data(for: request)
         
 
-        // MARK: RAW RESPONSE
+        // RAW RESPONSE
 
         print(
             "🌼 RAW RESPONSE:",
             String(data: data, encoding: .utf8) ?? "NO DATA"
         )
 
-        // MARK: STATUS CODE
+        // STATUS CODE
 
         if let http = response as? HTTPURLResponse {
 
@@ -106,7 +113,7 @@ final class AmbeeService {
             }
         }
 
-        // MARK: DECODE
+        // DECODE
 
         let decoded =
         try JSONDecoder().decode(
@@ -129,6 +136,10 @@ final class AmbeeService {
             treePollen: first.Count.tree_pollen,
             weedPollen: first.Count.weed_pollen
         )
+
+        print("🌼 GRASS:", pollen.grassPollen)
+        print("🌼 TREE:", pollen.treePollen)
+        print("🌼 WEED:", pollen.weedPollen)
 
         print("🌼 FINAL POLLEN:", pollen.dominant)
 

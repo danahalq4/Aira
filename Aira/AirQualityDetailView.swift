@@ -2,26 +2,13 @@
 //  AirQualityDetailView.swift
 //  Aira
 //
-//  Created by aeshah mohammed alabdulkarim on 17/05/2026.
-//
-
 
 import SwiftUI
 
-// MARK: - Air Quality Detail View
-
 struct AirQualityDetailView: View {
-    let triggers: [AsthmaTrigger]
-    let score: Double
 
-    // Loss per trigger — swap for real API values later
-    private func loss(for trigger: AsthmaTrigger) -> Int {
-        switch trigger.level {
-        case .high:     return 15
-        case .moderate: return 10
-        case .low:      return trigger.name == "Pollen" ? 3 : 2
-        }
-    }
+    let riskTriggers: [RiskTrigger]
+    let score: Double
 
     private func color(for index: Int) -> Color {
         switch index {
@@ -33,6 +20,11 @@ struct AirQualityDetailView: View {
         }
     }
 
+    // New: exclude Temperature from detail list
+    private var filteredTriggers: [RiskTrigger] {
+        riskTriggers.filter { $0.name != "Temperature" }
+    }
+
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 20) {
@@ -40,39 +32,44 @@ struct AirQualityDetailView: View {
                 // Annotated ring
                 AnnotatedRingView(
                     score: score,
-                    triggers: triggers,
-                    lossFor: loss,
+                    triggers: riskTriggers,
                     colorFor: color
                 )
                 .frame(width: 220, height: 220)
                 .padding(.top, 24)
 
                 Text("Each colored gap shows what's pulling your score down")
-                    .font(.system(size: 13))
+                    .font(.system(size: 13, weight: .regular))
                     .foregroundColor(Color("small text"))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
 
-                // Legend rows using your existing trigger data + colors
+                // Detail rows (without Temperature)
                 VStack(spacing: 10) {
-                    ForEach(Array(triggers.enumerated()), id: \.element.id) { index, trigger in
+                    ForEach(Array(filteredTriggers.enumerated()), id: \.offset) { index, trigger in
                         HStack(spacing: 12) {
                             Image(systemName: trigger.icon)
                                 .foregroundColor(color(for: index))
                                 .frame(width: 22)
 
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(trigger.name)
-                                    .font(.system(size: 15, weight: .medium))
-                                    .foregroundColor(Color("text"))
-                                Text(reasonText(for: trigger))
-                                    .font(.system(size: 12))
+                                HStack(spacing: 8) {
+                                    Text(trigger.name)
+                                        .font(.system(size: 15, weight: .medium))
+                                        .foregroundColor(Color("text"))
+                                    // Real value
+                                    Text(trigger.displayValue)
+                                        .font(.system(size: 13, weight: .regular))
+                                        .foregroundColor(Color("small text"))
+                                }
+                                Text(trigger.reasonText)
+                                    .font(.system(size: 12, weight: .regular))
                                     .foregroundColor(Color("small text"))
                             }
 
                             Spacer()
 
-                            Text("−\(loss(for: trigger))%")
+                            Text("−\(trigger.deduction)%")
                                 .font(.system(size: 15, weight: .semibold))
                                 .foregroundColor(color(for: index))
                         }
@@ -91,55 +88,46 @@ struct AirQualityDetailView: View {
         .navigationTitle("Why \(Int(score))%?")
         .navigationBarTitleDisplayMode(.inline)
     }
-
-    private func reasonText(for trigger: AsthmaTrigger) -> String {
-        switch trigger.level {
-        case .high:     return "High levels — can irritate airways"
-        case .moderate: return "Slightly elevated — worth monitoring"
-        case .low:      return "Low — not a concern today"
-        }
-    }
 }
 
 // MARK: - Annotated Ring
 
 private struct AnnotatedRingView: View {
     let score: Double
-    let triggers: [AsthmaTrigger]
-    let lossFor: (AsthmaTrigger) -> Int
+    let triggers: [RiskTrigger]
     let colorFor: (Int) -> Color
 
     private let lineWidth: CGFloat = 22
 
     var body: some View {
         ZStack {
-            // Background track
             Circle()
                 .stroke(Color("small text").opacity(0.15), lineWidth: lineWidth)
 
             // Blue = good score
             Circle()
                 .trim(from: 0, to: score / 100)
-                .stroke(Color.accentColor, style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt))
+                .stroke(Color.accentColor,
+                        style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt))
                 .rotationEffect(.degrees(-90))
 
             // Colored loss segments
-            ForEach(Array(triggers.enumerated()), id: \.element.id) { index, trigger in
+            ForEach(Array(triggers.enumerated()), id: \.offset) { index, trigger in
                 let start = segmentStart(upTo: index)
-                let end = start + Double(lossFor(trigger)) / 100
+                let end   = start + Double(trigger.deduction) / 100
 
                 Circle()
                     .trim(from: start, to: end)
-                    .stroke(colorFor(index), style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt))
+                    .stroke(colorFor(index),
+                            style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt))
                     .rotationEffect(.degrees(-90))
             }
 
-            // Center label
             VStack(spacing: 4) {
                 Text("\(Int(score))%")
                     .font(.system(size: 38, weight: .bold))
                     .foregroundColor(Color("text"))
-                Text("Good")
+                Text(RiskScoreEngine.scoreLabel(score))
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(Color("small text"))
             }
@@ -147,8 +135,8 @@ private struct AnnotatedRingView: View {
     }
 
     private func segmentStart(upTo index: Int) -> Double {
-        let base = score / 100
-        let prior = triggers.prefix(index).reduce(0) { $0 + lossFor($1) }
+        let base  = score / 100
+        let prior = triggers.prefix(index).reduce(0) { $0 + $1.deduction }
         return base + Double(prior) / 100
     }
 }
@@ -158,13 +146,22 @@ private struct AnnotatedRingView: View {
 #Preview {
     NavigationStack {
         AirQualityDetailView(
-            triggers: [
-                AsthmaTrigger(name: "Temperature", icon: "thermometer.medium", level: .high),
-                AsthmaTrigger(name: "Humidity",    icon: "drop.fill",          level: .moderate),
-                AsthmaTrigger(name: "Pollen",      icon: "leaf.fill",          level: .low),
-                AsthmaTrigger(name: "Dust",        icon: "aqi.low",            level: .low)
+            riskTriggers: [
+                RiskTrigger(name: "Temperature", icon: "thermometer.medium",
+                            level: .moderate, displayValue: "30°C",
+                            deduction: 10, reasonText: "Warm — slightly elevated"),
+                RiskTrigger(name: "Humidity",    icon: "drop.fill",
+                            level: .low,      displayValue: "55%",
+                            deduction: 2,  reasonText: "Comfortable range"),
+                RiskTrigger(name: "Pollen",      icon: "leaf.fill",
+                            level: .moderate, displayValue: "35 gr/m³",
+                            deduction: 10, reasonText: "Moderate — limit outdoor exposure"),
+                RiskTrigger(name: "Air Quality", icon: "aqi.low",
+                            level: .low,      displayValue: "AQI 48",
+                            deduction: 2,  reasonText: "Good air quality")
             ],
-            score: 70
+            score: 76
         )
     }
 }
+

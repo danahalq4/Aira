@@ -35,7 +35,7 @@ struct AsthmaOverviewView: View {
             .background(Color("background").ignoresSafeArea())
             .onAppear { viewModel.onAppear() }
             .navigationDestination(isPresented: $viewModel.showAirDetail) {
-                AirQualityDetailView(triggers: viewModel.triggers, score: viewModel.score)
+                AirQualityDetailView(riskTriggers: viewModel.riskTriggers, score: viewModel.score)
             }
         }
     }
@@ -84,7 +84,7 @@ struct AsthmaOverviewView: View {
             Button(action: viewModel.airQualityTapped) {
                 HStack(spacing: 10) {
                     Image(systemName: "wind")
-                        .foregroundColor(Color("ColorB")) // wind باللون الأزرق
+                        .foregroundColor(Color("ColorB"))
                     Text(viewModel.airQualityMessage)
                         .font(.system(size: 14))
                         .foregroundColor(Color("text"))
@@ -129,7 +129,7 @@ struct AsthmaOverviewView: View {
             HStack(spacing: 16) {
                 Image(systemName: "inhaler")
                     .font(.system(size: 32))
-                    .foregroundColor(Color("ColorB")) // البخاخ باللون الأزرق
+                    .foregroundColor(Color("ColorB"))
                     .frame(width: 44)
                 
                 VStack(alignment: .leading, spacing: 4) {
@@ -206,6 +206,22 @@ private struct TriggerRowView: View {
         default: return Color("text")
         }
     }
+    
+    private var levelProgress: Double {
+        switch trigger.level {
+        case .low: return 0.33
+        case .moderate: return 0.66
+        case .high: return 1.0
+        }
+    }
+    
+    private var levelColor: Color {
+        switch trigger.level {
+        case .low: return Color("ColorG")
+        case .moderate: return Color("ColorY")
+        case .high: return Color("ColorR")
+        }
+    }
 
     var body: some View {
         HStack(spacing: 12) {
@@ -213,15 +229,23 @@ private struct TriggerRowView: View {
                 .foregroundColor(highlightColor)
                 .frame(width: 22)
 
-            Text(trigger.name)
-                .font(.system(size: 15))
-                .foregroundColor(Color("text"))
-
+            VStack(alignment: .leading, spacing: 4) {
+                Text(trigger.name)
+                    .font(.system(size: 15))
+                    .foregroundColor(Color("text"))
+                
+                // القيمة الفعلية (درجة حرارة/رطوبة/AQI/...)
+                Text(trigger.displayValue)
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundColor(Color("small text"))
+            }
+            
             Spacer()
-
-            Text(trigger.level.rawValue)
-                .font(.system(size: 15, weight: .medium))
-                .foregroundColor(trigger.level == .low ? Color("ColorG") : Color("ColorY"))
+            
+            // شريط درجة الشدة بناءً على المستوى
+            ProgressView(value: levelProgress)
+                .tint(levelColor)
+                .frame(width: 90)
         }
     }
 }

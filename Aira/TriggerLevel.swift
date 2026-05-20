@@ -5,9 +5,6 @@
 //  Created by aeshah mohammed alabdulkarim on 11/05/2026.
 //
 
-
-
-
 import Foundation
 
 // MARK: - Trigger Level
@@ -25,6 +22,7 @@ struct AsthmaTrigger: Identifiable {
     let name: String
     let icon: String
     let level: TriggerLevel
+    let displayValue: String   // e.g., "32°C", "55%", "AQI 48"
 }
 
 // MARK: - Asthma Overview Data
@@ -35,6 +33,6 @@ struct AsthmaOverviewData {
     var airQualityMessage: String
     var triggers: [AsthmaTrigger]
     var inhalerReminderMessage: String
-    var hasActiveAlert: Bool 
-
+    var hasActiveAlert: Bool
 }
+

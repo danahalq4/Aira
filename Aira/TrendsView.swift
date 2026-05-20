@@ -74,7 +74,7 @@ struct TrendsView: View {
         VStack(alignment: .leading, spacing: 24) {
             HStack {
                 Text("Symptoms")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(size: 20, weight: .bold))
                     .foregroundColor(Color("text"))
                 Spacer()
                 HStack(spacing: 6) {
@@ -93,7 +93,7 @@ struct TrendsView: View {
                             .frame(width: 28, height: max(5, item.severity * 145))
                             .opacity(item.severity <= 0.05 ? 0.25 : 1)
                         Text(item.day)
-                            .font(.system(size: 13, weight: .regular))
+                            .font(.system(size: 11, weight: .semibold))
                             .foregroundColor(Color("small text"))
                     }
                 }
@@ -112,10 +112,10 @@ struct TrendsView: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 8) {
                 Image(systemName: "sparkles")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(size: 17, weight: .semibold))
                     .foregroundColor(Color("text"))
                 Text("Top Triggers")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(size: 20, weight: .bold))
                     .foregroundColor(Color("text"))
                 Spacer()
             }

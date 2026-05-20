@@ -34,4 +34,5 @@ struct TopTrigger: Identifiable {
     let percentage: Double
     let iconColor: Color
     let level: TriggerLevel
+    let symptomDayWeight: Double
 }

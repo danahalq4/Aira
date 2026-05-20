@@ -4,10 +4,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TrendsView: View {
 
     @StateObject private var viewModel = TrendsViewModel()
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         ZStack {
@@ -18,55 +20,28 @@ struct TrendsView: View {
 
                     // Header
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("My")
-                            .font(.system(size: 28, weight: .bold))
-                            .foregroundColor(Color("text"))
-                        Text("Trends")
+                        Text("Your Weekly Trends")
                             .font(.system(size: 16, weight: .regular))
                             .foregroundColor(Color("small text"))
+                        Text("This Week")
+                            .font(.system(size: 28, weight: .bold))
+                            .foregroundColor(Color("text"))
                     }
                     .padding(.top, 16)
 
-                    periodPicker
-                    symptomsCard
-                    topTriggersCard
+                  
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 32)
             }
         }
-    }
-
-    // MARK: - Period Picker
-
-    private var periodPicker: some View {
-        HStack(spacing: 0) {
-            ForEach(TrendPeriod.allCases) { period in
-                Button {
-                    viewModel.selectedPeriod = period
-                } label: {
-                    Text(period.rawValue)
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundColor(
-                            viewModel.selectedPeriod == period
-                            ? Color("ColorB") : Color("small text")
-                        )
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 11)
-                        .background(
-                            Capsule().fill(
-                                viewModel.selectedPeriod == period
-                                ? Color("ColorB").opacity(0.15) : Color.clear
-                            )
-                        )
-                }
-            }
+        .onAppear {
+            viewModel.modelContext = modelContext
+            viewModel.loadWeeklySymptomData()
         }
-        .padding(4)
-        .background(Color("card"))
-        .clipShape(Capsule())
-        .padding(.horizontal, 48)
     }
+
+    
 
     // MARK: - Symptoms Card
 
@@ -88,9 +63,9 @@ struct TrendsView: View {
             HStack(alignment: .bottom, spacing: 17) {
                 ForEach(viewModel.weeklyData) { item in
                     VStack(spacing: 10) {
-                        RoundedRectangle(cornerRadius: 7)
+                        Capsule()
                             .fill(item.isHighSeverity ? Color("ColorR") : Color("ColorB"))
-                            .frame(width: 28, height: max(5, item.severity * 145))
+                            .frame(width: 36, height: 10)
                             .opacity(item.severity <= 0.05 ? 0.25 : 1)
                         Text(item.day)
                             .font(.system(size: 11, weight: .semibold))
@@ -99,7 +74,7 @@ struct TrendsView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 165)
+            .frame(height: 80)
         }
         .padding(20)
         .background(Color("card"))
@@ -133,31 +108,30 @@ struct TrendsView: View {
 
     private func triggerRow(_ trigger: TopTrigger) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: trigger.icon)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundColor(trigger.iconColor)
-                .frame(width: 22)
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(trigger.title)
-                    .font(.system(size: 15, weight: .regular))
-                    .foregroundColor(Color("text"))
-                // Real value from HealthKit
-                Text(trigger.subtitle)
-                    .font(.system(size: 12, weight: .regular))
-                    .foregroundColor(Color("small text"))
+            // Rounded square icon bubble
+            ZStack {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(trigger.iconColor.opacity(0.15))
+                    .frame(width: 44, height: 44)
+                Image(systemName: trigger.icon)
+                    .font(.system(size: 20, weight: .medium))
+                    .foregroundColor(trigger.iconColor)
             }
-            .frame(width: 110, alignment: .leading)
+
+            Text(trigger.title)
+                .font(.system(size: 15, weight: .regular))
+                .foregroundColor(Color("text"))
+                .frame(width: 110, alignment: .leading)
 
             ProgressView(value: trigger.percentage)
-                .tint(trigger.iconColor)
+                .tint(Color("ColorB"))
                 .frame(height: 8)
 
-            // Level badge
-            Text(trigger.level.rawValue)
+            Text("\(Int(trigger.percentage * 100))%")
                 .font(.system(size: 13, weight: .medium))
-                .foregroundColor(levelColor(trigger.level))
-                .frame(width: 52, alignment: .trailing)
+                .foregroundColor(Color("small text"))
+                .frame(width: 42, alignment: .trailing)
+        
         }
     }
 

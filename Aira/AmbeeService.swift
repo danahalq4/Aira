@@ -83,6 +83,7 @@ final class AmbeeService {
 
         let (data, response) =
         try await URLSession.shared.data(for: request)
+        
 
         // MARK: RAW RESPONSE
 
@@ -133,6 +134,61 @@ final class AmbeeService {
 
         return pollen
     }
+
+    // MARK: - AQI (Ambee)
+
+    func fetchAQI(for location: CLLocation) async throws -> AQIData {
+        let lat = location.coordinate.latitude
+        let lng = location.coordinate.longitude
+        let urlStr = "https://api.ambeedata.com/latest/by-lat-lng?lat=\(lat)&lng=\(lng)"
+        guard let url = URL(string: urlStr) else { throw URLError(.badURL) }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue(apiKey, forHTTPHeaderField: "x-api-key")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        if let http = response as? HTTPURLResponse {
+            guard (200...299).contains(http.statusCode) else {
+                let body = String(data: data, encoding: .utf8) ?? ""
+                print("❌ Ambee AQI HTTP \(http.statusCode):", body)
+                throw URLError(.badServerResponse)
+            }
+        }
+
+        let decoded = try JSONDecoder().decode(AmbeeAQIResponse.self, from: data)
+        guard let first = decoded.stations.first else { throw URLError(.cannotParseResponse) }
+        return AQIData(aqi: first.AQI, dominantPollutant: first.dominantPollutant ?? "—")
+    }
+
+    // MARK: - Weather (Ambee)
+
+    func fetchWeather(for location: CLLocation) async throws -> AmbeeWeatherData {
+        let lat = location.coordinate.latitude
+        let lng = location.coordinate.longitude
+        let urlStr = "https://api.ambeedata.com/weather/latest/by-lat-lng?lat=\(lat)&lng=\(lng)"
+        guard let url = URL(string: urlStr) else { throw URLError(.badURL) }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue(apiKey, forHTTPHeaderField: "x-api-key")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        if let http = response as? HTTPURLResponse {
+            guard (200...299).contains(http.statusCode) else {
+                let body = String(data: data, encoding: .utf8) ?? ""
+                print("❌ Ambee Weather HTTP \(http.statusCode):", body)
+                throw URLError(.badServerResponse)
+            }
+        }
+
+        let decoded = try JSONDecoder().decode(AmbeeWeatherResponse.self, from: data)
+        return AmbeeWeatherData(humidity: decoded.data.humidity, temperature: decoded.data.temperature)
+    }
 }
 
 // MARK: - Decodable Models
@@ -152,4 +208,54 @@ private struct PollenCount: Decodable {
     let grass_pollen: Int
     let tree_pollen: Int
     let weed_pollen: Int
+}
+
+struct AQIData {
+    let aqi: Double
+    let dominantPollutant: String
+
+    var level: TriggerLevel {
+        switch aqi {
+        case 0...50:   return .low
+        case 51...150: return .moderate
+        default:       return .high
+        }
+    }
+
+    var displayValue: String { "AQI \(Int(aqi))" }
+}
+
+struct AmbeeWeatherData {
+    let humidity: Double
+    let temperature: Double
+
+    var level: TriggerLevel {
+        switch humidity {
+        case 0...40:  return .low
+        case 41...70: return .moderate
+        default:      return .high
+        }
+    }
+
+    var displayValue: String { "\(Int(humidity))% humidity" }
+}
+
+// MARK: - Ambee AQI / Weather Decodables
+
+private struct AmbeeAQIResponse: Decodable {
+    let stations: [AQIStation]
+}
+
+private struct AQIStation: Decodable {
+    let AQI: Double
+    let dominantPollutant: String?
+}
+
+private struct AmbeeWeatherResponse: Decodable {
+    let data: WeatherPayload
+}
+
+private struct WeatherPayload: Decodable {
+    let humidity: Double
+    let temperature: Double
 }

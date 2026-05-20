@@ -76,8 +76,9 @@ struct AsthmaWatchOverviewView: View {
             }
         
         }
-        .background(.background)
-        .onAppear {
+        .containerBackground(for: .navigation) {
+            Color.clear
+        }        .onAppear {
             viewModel.onAppear()
         }
         .overlay(alignment: .topTrailing) {
@@ -85,11 +86,17 @@ struct AsthmaWatchOverviewView: View {
                 showSymptomLog = true
             } label: {
                 Image(systemName: "plus")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 24, height: 24)
-                    .background(.secondary)
-                    .clipShape(Circle())
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(.primary)
+                    .frame(width: 28, height: 28)
+                    .background(
+                        Circle()
+                            .fill(.ultraThinMaterial)
+                    )
+                    .overlay {
+                        Circle()
+                            .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                    }
             }
             .buttonStyle(.plain)
             .padding(.trailing, 4)
@@ -147,3 +154,4 @@ private struct ScoreRingWatchView: View {
 #Preview {
     AsthmaWatchOverviewView(viewModel: AsthmaOverviewViewModel())
 }
+

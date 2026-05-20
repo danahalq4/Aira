@@ -30,6 +30,8 @@ struct TopTrigger: Identifiable {
     let id = UUID()
     let icon: String
     let title: String
+    let subtitle: String
     let percentage: Double
     let iconColor: Color
+    let level: TriggerLevel
 }

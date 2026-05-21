@@ -10,8 +10,12 @@ import Foundation
 struct RiskInput {
     // Environment
     var temperature_2m: Double?
-    var relative_humidity_2m: Double?           // 0–1
-    var pollenCount: Int?           // dominant grains/m³
+    var relative_humidity_2m: Double?           // 0–100 (%)
+    // Pollen inputs
+    var pollenCount: Int?           // dominant grains/m³ (highest of three)
+    var treePollen: Int?
+    var weedPollen: Int?
+    var grassPollen: Int?
     var aqi: Int?
 
     // Health
@@ -26,7 +30,7 @@ struct RiskInput {
 struct RiskResult {
     let score: Double                    // 0–100 (higher = safer)
     let label: String                    // "Good", "Fair", "Poor"
-    let triggers: [RiskTrigger]
+    let triggers: [RiskTrigger]          // full list for detail view (includes 3 pollen items)
 }
 
 struct RiskTrigger {
@@ -41,15 +45,6 @@ struct RiskTrigger {
 // MARK: - Engine
 
 enum RiskScoreEngine {
-
-    // Weights — total possible deduction = 100
-    private static let weights: [(
-        keyPath: KeyPath<RiskInput, Double?>,
-        name: String,
-        icon: String,
-        maxDeduction: Int,
-        evaluate: (Double) -> (TriggerLevel, String, Int, String)
-    )] = []          // we handle each factor manually below for clarity
 
     static func calculate(from input: RiskInput) -> RiskResult {
         var triggers: [RiskTrigger] = []
@@ -84,18 +79,57 @@ enum RiskScoreEngine {
             totalDeduction += deduction
         }
 
-        // ── 3. Pollen (max –20) ───────────────────────────────────
-        if let pollen = input.pollenCount {
-            let (level, reason, deduction) = evaluatePollen(pollen)
+        // ── 3. Pollen — score uses dominant only; details show 3 items ──
+        // Score impact (max –20) uses dominant to avoid double-penalizing
+        if let dominant = input.pollenCount {
+            let (level, reason, deduction) = evaluatePollen(dominant)
+            // We add a summary trigger for ring segmentation clarity
             triggers.append(RiskTrigger(
-                name: "Pollen",
+                name: "Pollen (Total)",
                 icon: "leaf.fill",
                 level: level,
-                displayValue: "\(pollen) gr/m³",
+                displayValue: "\(dominant) gr/m³",
                 deduction: deduction,
                 reasonText: reason
             ))
             totalDeduction += deduction
+        }
+
+        // Detail items (no additional deduction to score — informational)
+        // If you want them to also affect the ring segmentation visually without changing score,
+        // set deduction to 0 for each.
+        if let v = input.treePollen {
+            let (lvl, reason, _) = evaluatePollen(v)
+            triggers.append(RiskTrigger(
+                name: "Tree Pollen",
+                icon: "leaf.fill",
+                level: lvl,
+                displayValue: "\(v) gr/m³",
+                deduction: 0,
+                reasonText: reason
+            ))
+        }
+        if let v = input.weedPollen {
+            let (lvl, reason, _) = evaluatePollen(v)
+            triggers.append(RiskTrigger(
+                name: "Weed Pollen",
+                icon: "leaf",
+                level: lvl,
+                displayValue: "\(v) gr/m³",
+                deduction: 0,
+                reasonText: reason
+            ))
+        }
+        if let v = input.grassPollen {
+            let (lvl, reason, _) = evaluatePollen(v)
+            triggers.append(RiskTrigger(
+                name: "Grass Pollen",
+                icon: "leaf.arrow.circlepath",
+                level: lvl,
+                displayValue: "\(v) gr/m³",
+                deduction: 0,
+                reasonText: reason
+            ))
         }
 
         // ── 4. Air Quality (max –20) ──────────────────────────────

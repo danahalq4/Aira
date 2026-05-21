@@ -12,38 +12,24 @@ struct PollenData {
     let treePollen: Int
     let weedPollen: Int
 
-    // Use grass pollen only (better for asthma)
+    // Dominant = أعلى قيمة بين الأنواع الثلاثة (الأخطر للربو)
     var dominant: Int {
-
-        let values = [
-            grassPollen,
-            treePollen,
-            weedPollen
-        ]
-
-        let filtered = values.filter { $0 <= 200 }
-
-        return filtered.min() ?? 0
+        max(grassPollen, treePollen, weedPollen)
     }
-    // Risk level
 
+    // Risk level بناءً على dominant
     var level: TriggerLevel {
-
         switch dominant {
-
         case 0...20:
             return .low
-
         case 21...60:
             return .moderate
-
         default:
             return .high
         }
     }
 
     // Display text
-
     var displayValue: String {
         "\(dominant) gr/m³"
     }

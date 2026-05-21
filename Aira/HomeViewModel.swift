@@ -149,8 +149,8 @@ final class SymptomsViewModel: ObservableObject {
     @Published private(set) var allSymptomsByDate: [Date: [Symptom]] = [:]
     private let calendar = Calendar.current
 
-    init(seed: Bool = true) {
-        if seed { seedData() }
+    init(seed: Bool = false) {
+        if seed { seedData() } // default now false; no auto data in runtime
     }
 
     func symptoms(on day: Date) -> [Symptom] {
@@ -163,7 +163,7 @@ final class SymptomsViewModel: ObservableObject {
         guard var list = allSymptomsByDate[key],
               let idx = list.firstIndex(of: symptom) else { return }
         list[idx].isTracked.toggle()
-        allSymptomsByDate[key] = list   // ← triggers @Published
+        allSymptomsByDate[key] = list
     }
 
     func count(on day: Date) -> Int {
@@ -184,7 +184,7 @@ final class SymptomsViewModel: ObservableObject {
             iconSystemName: icon
         )
         list.append(symptom)
-        allSymptomsByDate[key] = list   // ← triggers @Published → UI يتحدث
+        allSymptomsByDate[key] = list
     }
 
     func addMany(names: [String], severity: Severity, time: Date, on day: Date) {
@@ -250,8 +250,6 @@ final class SymptomsViewModel: ObservableObject {
 @MainActor
 final class HomeViewModel: ObservableObject {
 
-    // ✅ FIX: بدّلنا @Published إلى stored + objectWillChange forwarding
-    //    عشان لما symptomsVM يغيّر بياناته، HomeView يعيد الرسم تلقائياً
     let calendarVM:  CalendarViewModel
     let symptomsVM:  SymptomsViewModel
 
@@ -261,11 +259,10 @@ final class HomeViewModel: ObservableObject {
          symptomsVM: SymptomsViewModel? = nil) {
 
         self.calendarVM = calendarVM ?? CalendarViewModel()
-        // ✅ FIX: seed: true بدل false — حتى تظهر البيانات التجريبية
-        self.symptomsVM = symptomsVM ?? SymptomsViewModel(seed: true)
+        // No auto seed in runtime
+        self.symptomsVM = symptomsVM ?? SymptomsViewModel(seed: false)
 
-        // ✅ FIX: أي تغيير في الـ child ViewModels يُشعل HomeViewModel
-        //    وبالتالي SwiftUI يعيد رسم HomeView وكل الـ computed properties
+        // Forward children changes
         self.symptomsVM.objectWillChange
             .sink { [weak self] _ in self?.objectWillChange.send() }
             .store(in: &cancellables)

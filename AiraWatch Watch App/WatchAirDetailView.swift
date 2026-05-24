@@ -1,63 +1,113 @@
 //
-//  WatchAirDetailView.swift
-//  Aira
-//
-//  Created by aeshah mohammed alabdulkarim on 20/05/2026.
-//
-
 import SwiftUI
 
+#if os(watchOS)
+
 struct WatchAirDetailView: View {
-    let triggers: [AsthmaTrigger]
+    let riskTriggers: [RiskTrigger]
     let score: Double
 
-    var body: some View {
-        List {
-            Section {
-                ForEach(triggers) { trigger in
-                    HStack {
-                        Image(systemName: trigger.icon)
-                            .foregroundStyle(.blue)
+    private var generalTriggers: [RiskTrigger] {
+        var rows: [RiskTrigger] = []
 
-                        Text(trigger.name)
-                            .font(.system(size: 14))
-
-                        Spacer()
-
-                        VStack(alignment: .trailing, spacing: 2) {
-                            Text("\(trigger.value) \(trigger.unit)")
-                                .font(.system(size: 13, weight: .semibold))
-
-                            Text(trigger.level.rawValue)
-                                .font(.system(size: 11))
-                                .foregroundStyle(levelColor(trigger.level))
-                        }
-                    }
-                }
-            } header: {
-                Text("Today's Triggers")
-            }
+        if let temp = riskTriggers.first(where: { $0.name == "Temperature" }) {
+            rows.append(temp)
         }
-        .navigationTitle("Air Details")
+
+        if let humidity = riskTriggers.first(where: { $0.name == "Humidity" }) {
+            rows.append(humidity)
+        }
+
+        if let pollen = riskTriggers.first(where: { $0.name == "Pollen (Total)" }) {
+            rows.append(
+                RiskTrigger(
+                    name: "Pollen",
+                    icon: pollen.icon,
+                    level: pollen.level,
+                    displayValue: pollen.displayValue,
+                    deduction: pollen.deduction,
+                    reasonText: pollen.reasonText
+                )
+            )
+        }
+
+        if let aqi = riskTriggers.first(where: { $0.name == "Air Quality" }) {
+            rows.append(aqi)
+        }
+
+        return rows
     }
 
-    private func levelColor(_ level: TriggerLevel) -> Color {
+    private func severityColor(_ level: TriggerLevel) -> Color {
         switch level {
-        case .low:      return .green
-        case .moderate: return .yellow
-        case .high:     return .red
+        case .high:     return Color("ColorR")
+        case .moderate: return Color("ColorO")
+        case .low:      return Color("ColorY")
         }
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 8) {
+                ForEach(generalTriggers, id: \.name) { trigger in
+                    WatchGeneralTriggerRow(
+                        trigger: trigger,
+                        severityColor: severityColor
+                    )
+                }
+            }
+            .padding(.horizontal, 4)
+            .padding(.top, 8)
+            .padding(.bottom, 12)
+        }
+        .navigationTitle("Breakdown")
+    }
+}
+
+private struct WatchGeneralTriggerRow: View {
+    let trigger: RiskTrigger
+    let severityColor: (TriggerLevel) -> Color
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: trigger.icon)
+                .foregroundStyle(severityColor(trigger.level))
+                .font(.system(size: 14))
+                .frame(width: 20)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(trigger.name)
+                    .font(.system(size: 13, weight: .medium))
+
+                Text(trigger.displayValue)
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Text(trigger.level.rawValue)
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(severityColor(trigger.level))
+                .padding(.horizontal, 7)
+                .padding(.vertical, 3)
+                .background(severityColor(trigger.level).opacity(0.15))
+                .clipShape(Capsule())
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 9)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
 
 #Preview {
-    WatchAirDetailView(
-        triggers: [
-            AsthmaTrigger(name: "Temperature", icon: "thermometer.medium", level: .high,     value: "34", unit: "°C"),
-            AsthmaTrigger(name: "Humidity",    icon: "drop.fill",          level: .moderate, value: "68", unit: "%"),
-            AsthmaTrigger(name: "Pollen",      icon: "leaf.fill",          level: .low,      value: "12", unit: "µg/m³"),
-            AsthmaTrigger(name: "Dust",        icon: "aqi.low",            level: .low,      value: "18", unit: "µg/m³")
-        ],
-        score: 82
-    )
+    NavigationStack {
+        WatchAirDetailView(
+            riskTriggers: [],
+            score: 54
+        )
+    }
 }
+
+#endif

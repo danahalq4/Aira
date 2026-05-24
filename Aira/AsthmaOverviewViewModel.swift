@@ -6,7 +6,7 @@
 import SwiftUI
 import Combine
 import CoreLocation
-
+import WatchConnectivity
 @MainActor
 final class AsthmaOverviewViewModel: ObservableObject {
 
@@ -207,8 +207,38 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
         triggers = main
 
+        print("ABOUT TO SEND SCORE TO WATCH:", result.score, result.label)
+
+        WatchConnectivityManager.shared.sendScoreToWatch(result: result)
+
         withAnimation(.easeOut(duration: 1.2)) {
             animatedScore = score
         }
     }
+
+    private func sendScoreToWatch(result: RiskResult) {
+        guard WCSession.isSupported() else { return }
+
+        let triggerDicts = result.triggers.map { trigger in
+            [
+                "name": trigger.name,
+                "icon": trigger.icon,
+                "level": trigger.level.rawValue,
+                "displayValue": trigger.displayValue,
+                "deduction": trigger.deduction,
+                "reasonText": trigger.reasonText
+            ] as [String : Any]
+        }
+
+        let data: [String: Any] = [
+            "type": "asthmaScore",
+            "score": result.score,
+            "label": result.label,
+            "triggers": triggerDicts
+        ]
+
+        try? WCSession.default.updateApplicationContext(data)
+        WCSession.default.transferUserInfo(data)
+    }
 }
+

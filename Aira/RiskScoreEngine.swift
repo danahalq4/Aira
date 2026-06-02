@@ -156,12 +156,13 @@ enum RiskScoreEngine {
     // Based on European pollen calendar thresholds (grains/m³)
     private static func evaluatePollen(_ count: Int) -> (TriggerLevel, String, Int) {
         switch count {
-        case 0...10:   return (.low,      "Very low — no concern",                  0)
-        case 11...30:  return (.low,      "Low — minimal impact",                   5)
-        case 31...80:  return (.moderate, "Moderate — limit prolonged outdoor time", 15)
-        default:       return (.high,     "High — stay indoors if possible",         30)
+        case 0...10:   return (.low,      "Very low — no concern",                   0)
+        case 11...50:  return (.low,      "Low — minimal impact",                    5)
+        case 51...150: return (.moderate, "Moderate — limit prolonged outdoor time", 15)
+        default:       return (.high,     "High — stay indoors if possible",          30)
         }
     }
+
 
     // AQI (US EPA scale) — max 25
     private static func evaluateAQI(_ aqi: Int) -> (TriggerLevel, String, Int) {

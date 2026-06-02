@@ -20,14 +20,12 @@ struct PollenData {
     // Risk level بناءً على dominant
     var level: TriggerLevel {
         switch dominant {
-        case 0...20:
-            return .low
-        case 21...60:
-            return .moderate
-        default:
-            return .high
+        case 0...50:   return .low
+        case 51...150: return .moderate
+        default:       return .high
         }
     }
+
 
     // Display text
     var displayValue: String {

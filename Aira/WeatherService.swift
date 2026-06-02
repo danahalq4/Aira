@@ -10,6 +10,7 @@ struct WeatherData: Codable {
 
     let temperature_2m: Double
     let relative_humidity_2m: Int
+    let wind_speed_10m: Double
 }
 
 struct OpenMeteoResponse: Codable {
@@ -33,19 +34,30 @@ final class WeatherService {
         let longitude = location.coordinate.longitude
 
         let urlString =
-        "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&current=temperature_2m,relative_humidity_2m"
+        "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&current=temperature_2m,relative_humidity_2m,wind_speed_10m"
 
         guard let url = URL(string: urlString) else {
             throw URLError(.badURL)
         }
 
-        let (data, _) = try await URLSession.shared.data(from: url)
+        let (data, _) =
+        try await URLSession.shared.data(from: url)
 
         let decoded =
-        try JSONDecoder().decode(OpenMeteoResponse.self, from: data)
+        try JSONDecoder().decode(
+            OpenMeteoResponse.self,
+            from: data
+        )
 
-        print("🌤 TEMP:", decoded.current.temperature_2m)
-        print("💧 HUMIDITY:", decoded.current.relative_humidity_2m)
+        print("🌤 TEMP:",
+              decoded.current.temperature_2m)
+
+        print("💧 HUMIDITY:",
+              decoded.current.relative_humidity_2m)
+
+        print("💨 WIND SPEED:",
+              decoded.current.wind_speed_10m,
+              "km/h")
 
         return decoded.current
     }

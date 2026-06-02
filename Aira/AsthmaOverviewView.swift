@@ -194,61 +194,67 @@ private struct ScoreRingView: View {
 // MARK: - Trigger Row
 
 private struct TriggerRowView: View {
+
     let trigger: AsthmaTrigger
     let index: Int
 
-    private var highlightColor: Color {
-        switch index {
-        case 0: return Color("ColorR")
-        case 1: return Color("ColorB")
-        case 2: return Color("ColorG")
-        case 3: return Color("ColorY")
-        default: return Color("text")
-        }
-    }
-    
-    private var levelProgress: Double {
-        switch trigger.level {
-        case .low: return 0.33
-        case .moderate: return 0.66
-        case .high: return 1.0
-        }
-    }
-    
+
     private var levelColor: Color {
+
         switch trigger.level {
-        case .low: return Color("ColorG")
-        case .moderate: return Color("ColorY")
-        case .high: return Color("ColorR")
+
+        case .low:
+            return Color("ColorG")
+
+        case .moderate:
+            return Color("ColorY")
+
+        case .high:
+            return Color("ColorR")
         }
     }
+
 
     var body: some View {
+
         HStack(spacing: 12) {
+
+
             Image(systemName: trigger.icon)
-                .foregroundColor(highlightColor)
+                .foregroundColor(levelColor)
                 .frame(width: 22)
 
-            VStack(alignment: .leading, spacing: 4) {
+
+            VStack(
+                alignment: .leading,
+                spacing: 4
+            ) {
+
                 Text(trigger.name)
                     .font(.system(size: 15))
                     .foregroundColor(Color("text"))
-                
-                // القيمة الفعلية (درجة حرارة/رطوبة/AQI/...)
+
+
                 Text(trigger.displayValue)
-                    .font(.system(size: 13, weight: .regular))
-                    .foregroundColor(Color("small text"))
+                    .font(
+                        .system(
+                            size: 13,
+                            weight: .regular
+                        )
+                    )
+                    .foregroundColor(
+                        Color("small text")
+                    )
             }
-            
+
+
             Spacer()
-            
-            // شريط درجة الشدة بناءً على المستوى
-            ProgressView(value: levelProgress)
-                .tint(levelColor)
-                .frame(width: 90)
         }
     }
 }
+
+
+
 
 // MARK: - Preview
 

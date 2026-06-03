@@ -8,22 +8,26 @@ import Combine
 import CoreLocation
 import WatchConnectivity
 
+
 @MainActor
 final class AsthmaOverviewViewModel: ObservableObject {
 
 
-    // MARK: - Published State
+    // MARK: - Published
 
     @Published private(set) var score: Double = 0
     @Published private(set) var animatedScore: Double = 0
     @Published private(set) var scoreLabel: String = "—"
 
-    @Published private(set) var airQualityMessage: String =
+    @Published private(set) var airQualityMessage =
     "Why is the asthma risk —?"
 
+    // HOME (Air only)
     @Published private(set) var triggers: [AsthmaTrigger] = []
 
+    // ALL (Air + Health)
     @Published private(set) var riskTriggers: [RiskTrigger] = []
+
 
     @Published private(set) var inhalerReminderMessage =
     "Use your inhaler as prescribed"
@@ -31,8 +35,11 @@ final class AsthmaOverviewViewModel: ObservableObject {
     @Published private(set) var hasActiveAlert = false
     @Published private(set) var isLoading = false
 
+
     @Published var showAirDetail = false
     @Published var showAlert = false
+
+
 
 
 
@@ -41,39 +48,72 @@ final class AsthmaOverviewViewModel: ObservableObject {
     private let locationService =
     LocationService.shared
 
+
     private var cancellables =
     Set<AnyCancellable>()
+
+
+
 
 
 
     // MARK: - Init
 
     init() {
+
         observeLocation()
     }
 
 
 
-    // MARK: - Intents
+
+
+
+
+    // MARK: - Actions
 
     func onAppear() {
 
-        withAnimation(.easeOut(duration: 1.2)) {
-            animatedScore = score
+
+        withAnimation(
+            .easeOut(duration: 1.2)
+        ) {
+
+            animatedScore =
+            score
         }
 
-        locationService.requestPermissionAndStart()
+
+
+        locationService
+            .requestPermissionAndStart()
     }
+
+
+
+
 
 
     func airQualityTapped() {
-        showAirDetail = true
+
+        showAirDetail =
+        true
     }
+
+
 
 
     func inhalerReminderTapped() {
-        showAlert = true
+
+        showAlert =
+        true
     }
+
+
+
+
+
+
 
 
 
@@ -81,22 +121,42 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
     private func observeLocation() {
 
-        locationService.$location
 
-            .compactMap { $0 }
+        locationService
+            .$location
+
+
+            .compactMap {
+
+                $0
+            }
+
+
 
             .removeDuplicates { a, b in
-                a.distance(from: b) < 500
+
+
+                a.distance(
+                    from: b
+                ) < 500
             }
+
+
 
             .sink { [weak self] location in
 
+
                 Task {
-                    await self?.fetchAllData(
-                        for: location
-                    )
+
+
+                    await self?
+                        .fetchAllData(
+                            for: location
+                        )
                 }
             }
+
+
 
             .store(
                 in: &cancellables
@@ -105,26 +165,50 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
 
 
-    // MARK: - Fetch
+
+
+
+
+
+
+
+    // MARK: - Fetch All
+
 
     private func fetchAllData(
         for location: CLLocation
     ) async {
 
 
-        isLoading = true
+
+        isLoading =
+        true
 
 
-        var input = RiskInput()
+
+        var input =
+        RiskInput()
+
+
 
 
 
         async let weatherResult =
-        fetchWeather(location: location)
+        fetchWeather(
+            location: location
+        )
 
 
         async let aqiResult =
-        fetchAQI(location: location)
+        fetchAQI(
+            location: location
+        )
+
+
+        async let pollenResult =
+        fetchPollen(
+            location: location
+        )
 
 
         async let healthResult =
@@ -132,29 +216,40 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
 
 
+
+
+
         let (
             weather,
             aqi,
+            pollen,
             health
-        ) =
+        )
+        =
         await (
             weatherResult,
             aqiResult,
+            pollenResult,
             healthResult
         )
 
 
 
-        // Weather + Wind
+
+
+
 
         if let w = weather {
+
 
             input.temperature_2m =
             w.temperature_2m
 
 
             input.relative_humidity_2m =
-            Double(w.relative_humidity_2m)
+            Double(
+                w.relative_humidity_2m
+            )
 
 
             input.windSpeed =
@@ -163,9 +258,11 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
 
 
-        // AQI
+
+
 
         if let a = aqi {
+
 
             input.aqi =
             a.aqi
@@ -173,7 +270,64 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
 
 
-        // Health
+
+
+
+        if let p = pollen {
+
+
+
+            let risks = [
+
+                p.treeRisk,
+                p.grassRisk,
+                p.weedRisk
+            ]
+
+
+
+            if risks.contains("High") {
+
+
+                input.pollenRisk =
+                "High"
+
+
+            } else if risks.contains("Moderate") {
+
+
+                input.pollenRisk =
+                "Moderate"
+
+
+            } else {
+
+
+                input.pollenRisk =
+                "Low"
+            }
+
+
+
+
+            input.treePollenCount =
+            p.treeCount
+
+
+            input.grassPollenCount =
+            p.grassCount
+
+
+            input.weedPollenCount =
+            p.weedCount
+        }
+
+
+
+
+
+
+
 
         input.sleepHours =
         health.sleepHours
@@ -192,66 +346,56 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
 
 
-        let hasAnyInput =
-
-        input.temperature_2m != nil ||
-
-        input.relative_humidity_2m != nil ||
-
-        input.windSpeed != nil ||
-
-        input.aqi != nil
 
 
 
-        if hasAnyInput {
-
-            let result =
-            RiskScoreEngine.calculate(
-                from: input
-            )
 
 
-            apply(
-                result: result
-            )
+        let result =
+        RiskScoreEngine.calculate(
+            from: input
+        )
 
 
-        } else {
 
 
-            score = 0
 
-            scoreLabel = "—"
-
-            airQualityMessage =
-            "Why is the asthma risk —?"
+        apply(
+            result: result
+        )
 
 
-            riskTriggers = []
 
-            triggers = []
-
-            animatedScore = 0
-        }
-
-
-        isLoading = false
+        isLoading =
+        false
     }
 
 
 
-    // MARK: - Fetch helpers
+
+
+
+
+
+
+
+
+    // MARK: - Helpers
 
 
     private func fetchWeather(
         location: CLLocation
     ) async -> WeatherData? {
 
-        try? await WeatherService.shared.fetch(
+
+        try? await
+        WeatherService.shared.fetch(
             for: location
         )
     }
+
+
+
 
 
 
@@ -259,14 +403,40 @@ final class AsthmaOverviewViewModel: ObservableObject {
         location: CLLocation
     ) async -> AirQualityData? {
 
-        try? await AirVisualService.shared.fetch(
+
+        try? await
+        AirVisualService.shared.fetch(
             for: location
         )
     }
 
 
 
-    // MARK: - Apply Result
+
+
+
+
+    private func fetchPollen(
+        location: CLLocation
+    ) async -> PollenData? {
+
+
+        try? await
+        AmbeeService.shared.fetch(
+            for: location
+        )
+    }
+
+
+
+
+
+
+
+
+
+
+    // MARK: - Apply
 
 
     private func apply(
@@ -274,16 +444,98 @@ final class AsthmaOverviewViewModel: ObservableObject {
     ) {
 
 
+
+
         score =
         result.score
+
 
 
         scoreLabel =
         result.label
 
 
+
+
+
+
+
+
+        // MARK: Alert only High + Critical
+
+
+        if result.score < 40 {
+
+
+
+            hasActiveAlert =
+            true
+
+
+
+
+
+            if result.score < 25 {
+
+
+
+                inhalerReminderMessage =
+                "Critical asthma risk detected. Review your recommendations."
+
+
+
+            } else {
+
+
+
+                inhalerReminderMessage =
+                "High asthma risk detected. Check your recommendations."
+            }
+
+
+
+
+
+
+            AlertHistoryStore.shared
+                .saveIfNeeded(
+                    result: result
+                )
+
+
+
+        } else {
+
+
+
+
+            hasActiveAlert =
+            false
+
+
+
+
+            inhalerReminderMessage =
+            "Use your inhaler as prescribed"
+        }
+
+
+
+
+
+
+
+
+
         airQualityMessage =
         "Why is the asthma risk \(result.label.lowercased())?"
+
+
+
+
+
+
+
 
 
         riskTriggers =
@@ -291,58 +543,78 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
 
 
-        var main: [AsthmaTrigger] = []
 
 
 
-        func makeAsthmaTrigger(
-            from rt: RiskTrigger
-        ) -> AsthmaTrigger {
-
-
-            AsthmaTrigger(
-
-                name: rt.name,
-
-                icon: rt.icon,
-
-                level: rt.level,
-
-                displayValue: rt.displayValue
-            )
-        }
 
 
 
-        for rt in result.triggers {
+        TrendsStore.shared.update(
+
+            score:
+                result.score,
 
 
-            if rt.name == "Temperature" ||
-
-                rt.name == "Humidity" ||
-
-                rt.name == "Air Quality" ||
-
-                rt.name == "Wind Speed" {
+            triggers:
+                result.triggers
+        )
 
 
-                main.append(
-                    makeAsthmaTrigger(from: rt)
+
+
+
+
+
+
+
+
+        triggers =
+        result.triggers
+
+
+            .filter {
+
+
+                $0.name == "Air Quality" ||
+
+                $0.name == "Humidity" ||
+
+                $0.name == "Temperature" ||
+
+                $0.name == "Wind Speed" ||
+
+                $0.name == "Pollen"
+            }
+
+
+
+            .map {
+
+
+                AsthmaTrigger(
+
+                    name:
+                        $0.name,
+
+
+                    icon:
+                        $0.icon,
+
+
+                    level:
+                        $0.level,
+
+
+                    displayValue:
+                        $0.displayValue
                 )
             }
-        }
 
 
 
-        triggers = main
 
 
 
-        print(
-            "ABOUT TO SEND SCORE TO WATCH:",
-            result.score,
-            result.label
-        )
 
 
 
@@ -353,11 +625,18 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
 
 
+
+
+
+
+
         withAnimation(
             .easeOut(duration: 1.2)
         ) {
 
-            animatedScore = score
+
+            animatedScore =
+            score
         }
     }
 }

@@ -4,146 +4,408 @@
 //
 
 import SwiftUI
-import SwiftData
+
 
 struct TrendsView: View {
 
-    @StateObject private var viewModel = TrendsViewModel()
-    @Environment(\.modelContext) private var modelContext
+
+    @StateObject private var viewModel =
+    TrendsViewModel()
+
+
 
     var body: some View {
-        ZStack {
-            Color("background").ignoresSafeArea()
+
+
+        VStack(spacing: 0) {
+
+
+            headerView
+
+
 
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 22) {
 
-                    // Header
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Your Weekly Trends")
-                            .font(.system(size: 16, weight: .regular))
-                            .foregroundColor(Color("small text"))
-                        Text("This Week")
-                            .font(.system(size: 28, weight: .bold))
-                            .foregroundColor(Color("text"))
-                    }
-                    .padding(.top, 16)
 
-                  
+                VStack(spacing: 16) {
+
+
+                    asthmaScoreCard
+
+
+                    topTriggersCard
+
                 }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 32)
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 24)
             }
         }
-        .onAppear {
-            viewModel.modelContext = modelContext
-            viewModel.loadWeeklySymptomData()
-        }
+        .background(
+            Color("background")
+                .ignoresSafeArea()
+        )
     }
 
-    
 
-    // MARK: - Symptoms Card
 
-    private var symptomsCard: some View {
-        VStack(alignment: .leading, spacing: 24) {
+
+
+
+
+    // MARK: - Header
+
+
+    private var headerView: some View {
+
+
+        HStack {
+
+
+            VStack(
+                alignment: .leading,
+                spacing: 2
+            ) {
+
+
+                Text("Your Weekly Trends")
+                    .font(
+                        .system(
+                            size: 16,
+                            weight: .regular
+                        )
+                    )
+                    .foregroundColor(
+                        Color("small text")
+                    )
+
+
+
+                Text("This Week")
+                    .font(
+                        .system(
+                            size: 28,
+                            weight: .bold
+                        )
+                    )
+                    .foregroundColor(
+                        Color("text")
+                    )
+            }
+
+
+            Spacer()
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 16)
+        .padding(.bottom, 8)
+    }
+
+
+
+
+
+
+
+
+
+    // MARK: - Asthma Score Card
+
+
+    private var asthmaScoreCard: some View {
+
+
+        VStack(
+            alignment: .leading,
+            spacing: 20
+        ) {
+
+
+
             HStack {
-                Text("Symptoms")
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundColor(Color("text"))
+
+
+                Text("Asthma Score")
+                    .font(
+                        .system(
+                            size: 16,
+                            weight: .semibold
+                        )
+                    )
+                    .foregroundColor(
+                        Color("text")
+                    )
+
+
                 Spacer()
-                HStack(spacing: 6) {
-                    Circle().fill(Color("ColorB")).frame(width: 8, height: 8)
-                    Text("SYM")
-                        .font(.system(size: 13, weight: .regular))
-                        .foregroundColor(Color("small text"))
-                }
+
+
+
+                Text("AVG")
+                    .font(
+                        .system(
+                            size: 14
+                        )
+                    )
+                    .foregroundColor(
+                        Color("small text")
+                    )
             }
 
-            HStack(alignment: .bottom, spacing: 17) {
+
+
+
+
+
+            HStack(
+                alignment: .bottom
+            ) {
+
+
                 ForEach(viewModel.weeklyData) { item in
-                    VStack(spacing: 10) {
+
+
+                    VStack(spacing: 8) {
+
+
                         Capsule()
-                            .fill(item.isHighSeverity ? Color("ColorR") : Color("ColorB"))
-                            .frame(width: 36, height: 10)
-                            .opacity(item.severity <= 0.05 ? 0.25 : 1)
+                            .fill(
+                                Color("ColorB")
+                            )
+                            .frame(
+                                width: 22,
+                                height:
+                                    max(
+                                        25,
+                                        item.score * 1.2
+                                    )
+                            )
+
+
+
                         Text(item.day)
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundColor(Color("small text"))
+                            .font(
+                                .system(
+                                    size: 13,
+                                    weight: .medium
+                                )
+                            )
+                            .foregroundColor(
+                                Color("small text")
+                            )
                     }
+
+
+                    Spacer()
                 }
             }
-            .frame(maxWidth: .infinity)
-            .frame(height: 80)
+            .frame(height: 170)
+
         }
         .padding(20)
-        .background(Color("card"))
-        .cornerRadius(20)
+        .background(
+
+            RoundedRectangle(
+                cornerRadius: 20,
+                style: .continuous
+            )
+            .fill(
+                Color("card")
+            )
+        )
     }
 
-    // MARK: - Top Triggers Card (HealthKit)
+
+
+
+
+
+
+
+
+    // MARK: - Top Triggers
+
 
     private var topTriggersCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
+
+
+        VStack(
+            alignment: .leading,
+            spacing: 14
+        ) {
+
+
+
             HStack(spacing: 8) {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundColor(Color("text"))
+
+
+                Image(
+                    systemName: "sparkles"
+                )
+
+
                 Text("Top Triggers")
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundColor(Color("text"))
-                Spacer()
+                    .font(
+                        .system(
+                            size: 16,
+                            weight: .semibold
+                        )
+                    )
+
+            }
+            .foregroundColor(
+                Color("text")
+            )
+
+
+
+
+
+
+            ForEach(viewModel.topTriggers) { trigger in
+
+
+                triggerRow(
+                    trigger
+                )
             }
 
-            VStack(spacing: 12) {
-                ForEach(viewModel.topTriggers) { trigger in
-                    triggerRow(trigger)
-                }
-            }
         }
         .padding(20)
-        .background(Color("card"))
-        .cornerRadius(20)
+        .frame(
+            maxWidth: .infinity,
+            alignment: .leading
+        )
+        .background(
+
+            RoundedRectangle(
+                cornerRadius: 20,
+                style: .continuous
+            )
+            .fill(
+                Color("card")
+            )
+        )
     }
 
-    private func triggerRow(_ trigger: TopTrigger) -> some View {
+
+
+
+
+
+
+
+    // MARK: - Row
+
+
+    private func triggerRow(
+        _ trigger: TopTrigger
+    ) -> some View {
+
+
+
         HStack(spacing: 12) {
-            // Rounded square icon bubble
-            ZStack {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(trigger.iconColor.opacity(0.15))
-                    .frame(width: 44, height: 44)
-                Image(systemName: trigger.icon)
-                    .font(.system(size: 20, weight: .medium))
-                    .foregroundColor(trigger.iconColor)
+
+
+
+            Image(
+                systemName: trigger.icon
+            )
+            .foregroundColor(
+                levelColor(
+                    trigger.level
+                )
+            )
+            .frame(width: 22)
+
+
+
+
+
+            VStack(
+                alignment: .leading,
+                spacing: 4
+            ) {
+
+
+                Text(trigger.title)
+                    .font(
+                        .system(size: 15)
+                    )
+                    .foregroundColor(
+                        Color("text")
+                    )
+
+
+
+                Text(trigger.subtitle)
+                    .font(
+                        .system(size: 13)
+                    )
+                    .foregroundColor(
+                        Color("small text")
+                    )
             }
 
-            Text(trigger.title)
-                .font(.system(size: 15, weight: .regular))
-                .foregroundColor(Color("text"))
-                .frame(width: 110, alignment: .leading)
 
-            ProgressView(value: trigger.percentage)
-                .tint(Color("ColorB"))
-                .frame(height: 8)
 
-            Text("\(Int(trigger.percentage * 100))%")
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(Color("small text"))
-                .frame(width: 42, alignment: .trailing)
-        
+            Spacer()
+
+
+
+            Text(
+                "\(Int(trigger.percentage * 100))%"
+            )
+            .font(
+                .system(
+                    size: 13,
+                    weight: .medium
+                )
+            )
+            .foregroundColor(
+                Color("small text")
+            )
         }
     }
 
-    private func levelColor(_ level: TriggerLevel) -> Color {
+
+
+
+
+
+
+    private func levelColor(
+        _ level: TriggerLevel
+    ) -> Color {
+
+
         switch level {
-        case .low:      return Color("ColorG")
-        case .moderate: return Color("ColorY")
-        case .high:     return Color("ColorR")
+
+
+        case .low:
+
+            return Color("ColorG")
+
+
+        case .moderate:
+
+            return Color("ColorY")
+
+
+        case .high:
+
+            return Color("ColorR")
         }
     }
 }
 
+
+
+
+
+
+
 #Preview {
+
     TrendsView()
 }

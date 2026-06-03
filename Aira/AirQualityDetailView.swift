@@ -16,7 +16,8 @@ struct AirQualityDetailView: View {
                 $0.name == "Temperature" ||
                 $0.name == "Humidity" ||
                 $0.name == "Air Quality" ||
-                $0.name == "Wind Speed"
+                $0.name == "Wind Speed" ||
+                $0.name == "Pollen"
             }
             .sorted {
                 $0.deduction > $1.deduction

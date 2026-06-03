@@ -7,19 +7,26 @@ import Foundation
 import Combine
 
 
+
 struct AsthmaAlertLog: Identifiable {
 
 
     let id = UUID()
 
+
     let date: Date
+
 
     let score: Double
 
+
     let label: String
+
 
     let triggers: [RiskTrigger]
 }
+
+
 
 
 
@@ -33,12 +40,20 @@ final class AlertHistoryStore: ObservableObject {
 
 
 
+
+
     @Published private(set)
     var alerts: [AsthmaAlertLog] = []
 
 
 
+
+
+
     private init() {}
+
+
+
 
 
 
@@ -50,12 +65,28 @@ final class AlertHistoryStore: ObservableObject {
     ) {
 
 
-        // Only High + Critical
+
+        print(
+            "📥 TRY SAVE ALERT:",
+            result.score
+        )
+
+
+
+
+
+
+     
 
         guard result.score < 40 else {
 
+
             return
         }
+
+
+
+
 
 
 
@@ -77,24 +108,45 @@ final class AlertHistoryStore: ObservableObject {
 
 
 
+
+
+
+
         let oldTriggers =
         todayAlert?
             .triggers
-            .map { $0.name }
+
+            .map {
+
+                $0.name
+            }
+
             .sorted()
+
+
+
+
 
 
 
         let newTriggers =
         result.triggers
+
+
             .filter {
+
 
                 $0.deduction > 0
             }
+
+
             .map {
+
 
                 $0.name
             }
+
+
             .sorted()
 
 
@@ -102,9 +154,19 @@ final class AlertHistoryStore: ObservableObject {
 
 
 
-        // prevent duplicate
+
+
+
+        // لا يكرر نفس التنبيه بنفس اليوم
+
 
         if oldTriggers == newTriggers {
+
+
+            print(
+                "⚠️ SAME ALERT - NOT SAVED AGAIN"
+            )
+
 
             return
         }
@@ -114,26 +176,37 @@ final class AlertHistoryStore: ObservableObject {
 
 
 
+
+
+
+
         let alert =
         AsthmaAlertLog(
 
+
             date:
                 Date(),
+
 
 
             score:
                 result.score,
 
 
+
             label:
-                result.score < 25
-                ? "Critical Risk"
-                : "High Risk",
+                alertLabel(
+                    score:
+                        result.score
+                ),
+
 
 
             triggers:
                 result.triggers
+
                     .filter {
+
 
                         $0.deduction > 0
                     }
@@ -144,9 +217,72 @@ final class AlertHistoryStore: ObservableObject {
 
 
 
+
+
+
+
         alerts.insert(
+
             alert,
+
             at: 0
         )
+
+
+
+
+
+
+
+
+
+
+        print("🚨 ALERT SAVED")
+
+
+        print(
+            "TYPE:",
+            alert.label
+        )
+
+
+        print(
+            "SCORE:",
+            alert.score
+        )
+
+
+        print(
+            "TRIGGERS:",
+            alert.triggers.map {
+                $0.name
+            }
+        )
+    }
+
+
+
+
+
+
+
+
+
+    private func alertLabel(
+        score: Double
+    ) -> String {
+
+
+        if score < 25 {
+
+
+            return "Critical Risk"
+
+
+        } else {
+
+
+            return "High Risk"
+        }
     }
 }

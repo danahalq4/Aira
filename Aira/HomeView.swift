@@ -81,8 +81,8 @@ struct HomeView: View {
 
                     SymptomsListView(
                         symptoms: symptomsForDay,
-                        toggleAction: { symptom in
-                            viewModel.symptomsVM.toggleTracked(
+                        deleteAction: { symptom in
+                            viewModel.symptomsVM.delete(
                                 symptom,
                                 on: viewModel.calendarVM.selectedDate
                             )
@@ -111,11 +111,14 @@ struct HomeView: View {
 
     private func severityFromIndex(_ idx: Int) -> Severity {
         switch idx {
-        case 0: return .mild
-        case 1: return .mild
-        case 2: return .moderate
-        case 3: return .severe
-        default: return .mild
+        case 0:
+            return .mild        // Yellow / Moderate
+        case 1:
+            return .moderate    // Orange / Severe
+        case 2:
+            return .severe      // Red / Very Severe
+        default:
+            return .mild
         }
     }
     private func severityFromRaw(_ raw: String?) -> Severity {

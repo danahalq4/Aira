@@ -2,44 +2,87 @@
 //  SymptomsListView.swift
 //  Aira
 //
-
 import SwiftUI
 
 struct SymptomsListView: View {
     let symptoms: [Symptom]
-    let toggleAction: (Symptom) -> Void
+    let deleteAction: (Symptom) -> Void
 
     var body: some View {
         VStack(spacing: 12) {
             ForEach(symptoms) { symptom in
-                SymptomCardView(symptom: symptom) {
-                    toggleAction(symptom)
+                SwipeDeleteRow {
+                    SymptomCardView(symptom: symptom)
+                } onDelete: {
+                    deleteAction(symptom)
                 }
             }
         }
     }
 }
 
+struct SwipeDeleteRow<Content: View>: View {
+    let content: Content
+    let onDelete: () -> Void
+
+    @State private var offsetX: CGFloat = 0
+    private let deleteWidth: CGFloat = 86
+
+    init(@ViewBuilder content: () -> Content, onDelete: @escaping () -> Void) {
+        self.content = content()
+        self.onDelete = onDelete
+    }
+
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            Button {
+                withAnimation {
+                    onDelete()
+                }
+            } label: {
+                Image(systemName: "trash")
+                    .foregroundColor(.white)
+                    .font(.system(size: 20, weight: .semibold))
+                    .frame(width: deleteWidth)
+                    .frame(maxHeight: .infinity)
+                    .background(Color.red)
+            }
+
+            content
+                .offset(x: offsetX)
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            if value.translation.width < 0 {
+                                offsetX = max(value.translation.width, -deleteWidth)
+                            }
+                        }
+                        .onEnded { value in
+                            withAnimation(.spring()) {
+                                offsetX = value.translation.width < -40 ? -deleteWidth : 0
+                            }
+                        }
+                )
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+}
+
 struct SymptomCardView: View {
     let symptom: Symptom
-    let onToggle: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
-
             VStack(alignment: .leading, spacing: 4) {
-                // ── Symptom name (matches "Temprature", "Humidity") ──
                 Text(symptom.name)
                     .font(.system(size: 15, weight: .medium))
                     .foregroundColor(Color("text"))
 
                 HStack(spacing: 8) {
-                    // ── Time (small secondary) ──
                     Text(timeString(symptom.time))
-                        .font(.system(size: 13, weight: .regular))
+                        .font(.system(size: 13))
                         .foregroundColor(Color("small text"))
 
-                    // ── Severity dot فقط بدون نص
                     Circle()
                         .fill(Color(symptom.severity.colorAssetName))
                         .frame(width: 8, height: 8)
@@ -60,19 +103,4 @@ struct SymptomCardView: View {
         df.timeStyle = .short
         return df.string(from: date)
     }
-}
-
-#Preview {
-    VStack {
-        SymptomsListView(
-            symptoms: [
-                Symptom(name: "Wheezing",  time: Date(), severity: .moderate, isTracked: true,  iconSystemName: "wind"),
-                Symptom(name: "Cough",     time: Date(), severity: .severe,   isTracked: true,  iconSystemName: "lungs.fill"),
-                Symptom(name: "Fatigue",   time: Date(), severity: .mild,     isTracked: false, iconSystemName: "zzz")
-            ],
-            toggleAction: { _ in }
-        )
-    }
-    .padding()
-    .background(Color("background"))
 }

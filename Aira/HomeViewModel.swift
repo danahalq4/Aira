@@ -34,17 +34,23 @@ enum Severity: String, CaseIterable, Codable {
 
     var colorAssetName: String {
         switch self {
-        case .mild:     return "ColorG"
-        case .moderate: return "ColorO"
-        case .severe:   return "ColorR"
+        case .mild:
+            return "ColorY"   // أصفر
+        case .moderate:
+            return "ColorO"   // أورنج
+        case .severe:
+            return "ColorR"   // أحمر
         }
     }
 
     var displayText: String {
         switch self {
-        case .mild:     return "Mild"
-        case .moderate: return "Moderate"
-        case .severe:   return "Severe"
+        case .mild:
+            return "Mild"
+        case .moderate:
+            return "Moderate"
+        case .severe:
+            return "Severe"
         }
     }
 }
@@ -165,10 +171,22 @@ final class SymptomsViewModel: ObservableObject {
         list[idx].isTracked.toggle()
         allSymptomsByDate[key] = list
     }
+   
+
+    func delete(_ symptom: Symptom, on day: Date) {
+        let key = calendar.startOfDay(for: day)
+
+        guard var list = allSymptomsByDate[key] else { return }
+
+        list.removeAll { $0.id == symptom.id }
+
+        allSymptomsByDate[key] = list
+    }
 
     func count(on day: Date) -> Int {
         symptoms(on: day).count
     }
+    
 
     // MARK: Add APIs
 

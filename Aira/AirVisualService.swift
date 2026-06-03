@@ -23,9 +23,20 @@ struct AirQualityData {
 
 final class AirVisualService {
 
+
     static let shared = AirVisualService()
-    private let apiKey = "28041d9a-fef0-4030-92e4-dc7d08fa2363"
+
+
     private init() {}
+
+
+
+    private var apiKey: String {
+
+        Bundle.main.object(
+            forInfoDictionaryKey: "AIRVISUAL_API_KEY"
+        ) as? String ?? ""
+    }
 
     func fetch(for location: CLLocation) async throws -> AirQualityData {
         let lat = location.coordinate.latitude

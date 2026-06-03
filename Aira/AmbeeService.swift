@@ -95,10 +95,12 @@ final class AmbeeService {
 
     private init() {}
 
+    private var apiKey: String {
 
-    private let apiKey =
-    "66ace5938b3431834d9944765fe84efb9397c3a26a5a86e7df044ffe40bdac28"
-
+        Bundle.main.object(
+            forInfoDictionaryKey: "AMBEE_API_KEY"
+        ) as? String ?? ""
+    }
 
 
     // MARK: - Fetch Pollen

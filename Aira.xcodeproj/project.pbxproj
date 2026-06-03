@@ -87,6 +87,13 @@
 			);
 			target = 45DABC272FBC8BDB00C3A8C1 /* AiraWatch Watch App */;
 		};
+		CE906A752FD0DE9800AC5EAA /* Exceptions for "AiraWatch Watch App" folder in "AiraWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"AiraWatch-Watch-App-Info.plist",
+			);
+			target = 45DABC272FBC8BDB00C3A8C1 /* AiraWatch Watch App */;
+		};
 		CEE023342FBC8F8900D6EFAC /* Exceptions for "Aira" folder in "Aira" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -99,6 +106,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		45DABC292FBC8BDB00C3A8C1 /* AiraWatch Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CE906A752FD0DE9800AC5EAA /* Exceptions for "AiraWatch Watch App" folder in "AiraWatch Watch App" target */,
+			);
 			path = "AiraWatch Watch App";
 			sourceTree = "<group>";
 		};
@@ -533,6 +543,7 @@
 				DEVELOPMENT_TEAM = VKT97NG2T3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AiraWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = AiraWatch;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.dannah.Aira.weather;
@@ -566,6 +577,7 @@
 				DEVELOPMENT_TEAM = VKT97NG2T3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AiraWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = AiraWatch;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.dannah.Aira.weather;
@@ -812,6 +824,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aira/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app uses Health data to support asthma monitoring.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Aira saves asthma-related health information.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Aira uses your location to check air quality and pollen near you.";
@@ -850,6 +863,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Aira/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app uses Health data to support asthma monitoring.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Aira saves asthma-related health information.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Aira uses your location to check air quality and pollen near you.";

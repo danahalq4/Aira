@@ -545,16 +545,16 @@
 				DEVELOPMENT_TEAM = VKT97NG2T3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "AiraWatch-Watch-App-Info.plist";
+				INFOPLIST_FILE = "AiraWatch Watch App/AiraWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = AiraWatch;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.dannah.Aira.weather;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.dannah.Aira.weathers;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dannah.Aira.weather.watchkitapp.;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dannah.Aira.weathers.watchkitapp.;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -581,16 +581,16 @@
 				DEVELOPMENT_TEAM = VKT97NG2T3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "AiraWatch-Watch-App-Info.plist";
+				INFOPLIST_FILE = "AiraWatch Watch App/AiraWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = AiraWatch;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.dannah.Aira.weather;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.dannah.Aira.weathers;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dannah.Aira.weather.watchkitapp.;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dannah.Aira.weathers.watchkitapp.;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;

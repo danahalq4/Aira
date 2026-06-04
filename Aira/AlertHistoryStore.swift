@@ -66,6 +66,7 @@ final class AlertHistoryStore: ObservableObject {
 
 
 
+
         print(
             "📥 TRY SAVE ALERT:",
             result.score
@@ -76,7 +77,7 @@ final class AlertHistoryStore: ObservableObject {
 
 
 
-     
+        // Only High + Critical
 
         guard result.score < 40 else {
 
@@ -116,12 +117,16 @@ final class AlertHistoryStore: ObservableObject {
         todayAlert?
             .triggers
 
+
             .map {
 
                 $0.name
             }
 
+
             .sorted()
+
+
 
 
 
@@ -157,8 +162,8 @@ final class AlertHistoryStore: ObservableObject {
 
 
 
-        // لا يكرر نفس التنبيه بنفس اليوم
 
+        // Prevent duplicate alerts today
 
         if oldTriggers == newTriggers {
 
@@ -170,7 +175,6 @@ final class AlertHistoryStore: ObservableObject {
 
             return
         }
-
 
 
 
@@ -221,6 +225,8 @@ final class AlertHistoryStore: ObservableObject {
 
 
 
+        // Save in history
+
         alerts.insert(
 
             alert,
@@ -237,7 +243,54 @@ final class AlertHistoryStore: ObservableObject {
 
 
 
-        print("🚨 ALERT SAVED")
+        // MARK: - Notification
+
+
+        if alert.score < 25 {
+
+
+            NotificationService.shared
+                .sendAlert(
+
+                    title:
+                        "🚨 Critical Asthma Alert",
+
+
+                    message:
+                        "Multiple asthma triggers are elevated. Take precautions and check your recommendations."
+                )
+
+
+
+        } else {
+
+
+
+            NotificationService.shared
+                .sendAlert(
+
+                    title:
+                        "⚠️ High Asthma Risk",
+
+
+                    message:
+                        "Your asthma risk is high today. Check your triggers and recommendations."
+                )
+        }
+
+
+
+
+
+
+
+
+
+
+        print(
+            "🚨 ALERT SAVED"
+        )
+
 
 
         print(
@@ -246,10 +299,12 @@ final class AlertHistoryStore: ObservableObject {
         )
 
 
+
         print(
             "SCORE:",
             alert.score
         )
+
 
 
         print(
@@ -268,6 +323,8 @@ final class AlertHistoryStore: ObservableObject {
 
 
 
+
+
     private func alertLabel(
         score: Double
     ) -> String {
@@ -277,6 +334,7 @@ final class AlertHistoryStore: ObservableObject {
 
 
             return "Critical Risk"
+
 
 
         } else {

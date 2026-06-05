@@ -7,46 +7,30 @@
 
 import SwiftUI
 
-
 // MARK: - Root View
 
 struct AsthmaOverviewView: View {
 
-
     @StateObject private var viewModel =
     AsthmaOverviewViewModel()
 
-
-
     var body: some View {
-
 
         NavigationStack {
 
-
             VStack(spacing: 0) {
-
 
                 headerView
 
-
-
                 ScrollView(showsIndicators: false) {
-
 
                     VStack(spacing: 16) {
 
-
                         if viewModel.hasActiveAlert {
-
-
                             inhalerReminderCard
                         }
 
-
-
                         asthmaScoreCard
-
 
                         todayTriggersCard
                     }
@@ -56,27 +40,20 @@ struct AsthmaOverviewView: View {
                 }
             }
 
-
             .background(
                 Color("background")
                     .ignoresSafeArea()
             )
 
-
             .onAppear {
-
                 viewModel.onAppear()
             }
-
-
 
             .navigationDestination(
                 isPresented: $viewModel.showAirDetail
             ) {
 
-
                 AirQualityDetailView(
-
                     riskTriggers:
                         viewModel.riskTriggers,
 
@@ -85,26 +62,18 @@ struct AsthmaOverviewView: View {
                 )
             }
 
-
-
             .navigationDestination(
                 isPresented: $viewModel.showAlert
             ) {
 
-
                 ALERT(
-
                     riskResult:
-
                         RiskResult(
-
                             score:
                                 viewModel.score,
 
-
                             label:
                                 viewModel.scoreLabel,
-
 
                             triggers:
                                 viewModel.riskTriggers
@@ -114,50 +83,29 @@ struct AsthmaOverviewView: View {
         }
     }
 
-
-
-
-
-
     // MARK: - Header
-
 
     private var headerView: some View {
 
-
         HStack {
-
 
             VStack(
                 alignment: .leading,
                 spacing: 2
             ) {
 
-
                 Text("Asthma")
-                    .font(
-                        .system(
-                            size: 28,
-                            weight: .bold
-                        )
-                    )
+                    .font(.largeTitle.weight(.bold))
                     .foregroundColor(
                         Color("text")
                     )
 
-
                 Text("Overview")
-                    .font(
-                        .system(
-                            size: 16
-                        )
-                    )
+                    .font(.body)
                     .foregroundColor(
                         Color("small text")
                     )
             }
-
-
 
             Spacer()
         }
@@ -166,45 +114,24 @@ struct AsthmaOverviewView: View {
         .padding(.bottom, 8)
     }
 
-
-
-
-
-
-
-
-
     // MARK: - Score Card
-
 
     private var asthmaScoreCard: some View {
 
-
         VStack(spacing: 16) {
-
 
             HStack {
 
-
                 Text("Asthma Risk")
-                    .font(
-                        .system(
-                            size: 16,
-                            weight: .semibold
-                        )
-                    )
+                    .font(.headline)
                     .foregroundColor(
                         Color("text")
                     )
 
-
                 Spacer()
             }
 
-
-
             ScoreRingView(
-
                 score:
                     viewModel.animatedScore,
 
@@ -216,40 +143,29 @@ struct AsthmaOverviewView: View {
                 height: 160
             )
 
-
-
             Divider()
-
-
 
             Button(
                 action:
                     viewModel.airQualityTapped
             ) {
 
-
                 HStack(spacing: 10) {
-
 
                     Image(systemName: "wind")
                         .foregroundColor(
                             Color("ColorB")
                         )
 
-
                     Text(
                         viewModel.airQualityMessage
                     )
-                    .font(.system(size: 14))
+                    .font(.subheadline)
                     .foregroundColor(
                         Color("text")
                     )
 
-
-
                     Spacer()
-
-
 
                     Image(systemName: "chevron.right")
                         .foregroundColor(
@@ -269,49 +185,28 @@ struct AsthmaOverviewView: View {
         )
     }
 
-
-
-
-
-
-
-
-
     // MARK: - Triggers Card
 
-
     private var todayTriggersCard: some View {
-
 
         VStack(
             alignment: .leading,
             spacing: 14
         ) {
 
-
             Text("Today's Triggers")
-                .font(
-                    .system(
-                        size: 16,
-                        weight: .semibold
-                    )
-                )
+                .font(.headline)
                 .foregroundColor(
                     Color("text")
                 )
-
-
 
             ForEach(
                 Array(viewModel.triggers.enumerated()),
                 id: \.element.id
             ) { index, trigger in
 
-
                 TriggerRowView(
-
                     trigger: trigger,
-
                     index: index
                 )
             }
@@ -331,68 +226,42 @@ struct AsthmaOverviewView: View {
         )
     }
 
-
-
-
-
-
-
-
-
-
     // MARK: - Inhaler Card
 
-
     private var inhalerReminderCard: some View {
-
 
         Button(
             action:
                 viewModel.inhalerReminderTapped
         ) {
 
-
             HStack(spacing: 16) {
 
-
                 Image(systemName: "inhaler")
-                    .font(.system(size: 32))
+                    .font(.largeTitle)
                     .foregroundColor(
                         Color("ColorB")
                     )
                     .frame(width: 44)
-
-
 
                 VStack(
                     alignment: .leading,
                     spacing: 4
                 ) {
 
-
                     Text("Inhaler Reminder")
-                        .font(
-                            .system(
-                                size: 15,
-                                weight: .semibold
-                            )
-                        )
-
+                        .font(.subheadline.weight(.semibold))
 
                     Text(
                         viewModel.inhalerReminderMessage
                     )
-                    .font(.system(size: 13))
+                    .font(.footnote)
                     .foregroundColor(
                         Color("small text")
                     )
                 }
 
-
-
                 Spacer()
-
-
 
                 Image(systemName: "chevron.right")
                     .foregroundColor(
@@ -411,39 +280,21 @@ struct AsthmaOverviewView: View {
     }
 }
 
-
-
-
-
-
-
-
-
-
 // MARK: - Score Ring
 
-
 private struct ScoreRingView: View {
-
 
     let score: Double
 
     let label: String
 
-
-
     private var progress: Double {
-
         score / 100
     }
 
-
-
     var body: some View {
 
-
         ZStack {
-
 
             Circle()
                 .stroke(
@@ -451,8 +302,6 @@ private struct ScoreRingView: View {
                         .opacity(0.2),
                     lineWidth: 14
                 )
-
-
 
             Circle()
                 .trim(
@@ -471,24 +320,13 @@ private struct ScoreRingView: View {
                     .degrees(-90)
                 )
 
-
-
             VStack(spacing: 4) {
 
-
                 Text("\(Int(score))%")
-                    .font(
-                        .system(
-                            size: 34,
-                            weight: .bold
-                        )
-                    )
-
+                    .font(.largeTitle.weight(.bold))
 
                 Text(LocalizedStringKey(label))
-                    .font(
-                        .system(size: 15)
-                    )
+                    .font(.subheadline)
                     .foregroundColor(
                         Color("small text")
                     )
@@ -497,22 +335,12 @@ private struct ScoreRingView: View {
     }
 }
 
-
-
-
-
-
-
-
-
-
 // MARK: - Trigger Row
 
 private struct TriggerRowView: View {
 
     let trigger: AsthmaTrigger
     let index: Int
-
 
     private var levelColor: Color {
 
@@ -529,41 +357,34 @@ private struct TriggerRowView: View {
         }
     }
 
-
     var body: some View {
 
         HStack(spacing: 12) {
 
-
             Image(systemName: trigger.icon)
                 .foregroundColor(levelColor)
                 .frame(width: 22)
-
 
             VStack(
                 alignment: .leading,
                 spacing: 4
             ) {
 
-
                 Text(LocalizedStringKey(trigger.name))
-                    .font(.system(size: 15))
+                    .font(.subheadline)
                     .foregroundColor(Color("text"))
 
-
                 Text(LocalizedStringKey(trigger.displayValue))
-                    .font(.system(size: 13))
+                    .font(.footnote)
                     .foregroundColor(
                         Color("small text")
                     )
             }
 
-
             Spacer()
         }
     }
 }
-
 
 #Preview {
 

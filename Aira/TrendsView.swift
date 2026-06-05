@@ -5,33 +5,22 @@
 
 import SwiftUI
 
-
 struct TrendsView: View {
-
 
     @StateObject private var viewModel =
     TrendsViewModel()
 
-
-
     var body: some View {
-
 
         VStack(spacing: 0) {
 
-
             headerView
-
-
 
             ScrollView(showsIndicators: false) {
 
-
                 VStack(spacing: 16) {
 
-
                     asthmaScoreCard
-
 
                     topTriggersCard
 
@@ -47,52 +36,29 @@ struct TrendsView: View {
         )
     }
 
-
-
-
-
-
-
     // MARK: - Header
-
 
     private var headerView: some View {
 
-
         HStack {
-
 
             VStack(
                 alignment: .leading,
                 spacing: 2
             ) {
 
-
                 Text("Your Weekly Trends")
-                    .font(
-                        .system(
-                            size: 16,
-                            weight: .regular
-                        )
-                    )
+                    .font(.body)
                     .foregroundColor(
                         Color("small text")
                     )
 
-
-
                 Text("This Week")
-                    .font(
-                        .system(
-                            size: 28,
-                            weight: .bold
-                        )
-                    )
+                    .font(.largeTitle.weight(.bold))
                     .foregroundColor(
                         Color("text")
                     )
             }
-
 
             Spacer()
         }
@@ -101,72 +67,39 @@ struct TrendsView: View {
         .padding(.bottom, 8)
     }
 
-
-
-
-
-
-
-
-
     // MARK: - Asthma Score Card
 
-
     private var asthmaScoreCard: some View {
-
 
         VStack(
             alignment: .leading,
             spacing: 20
         ) {
 
-
-
             HStack {
 
-
                 Text("Asthma Score")
-                    .font(
-                        .system(
-                            size: 16,
-                            weight: .semibold
-                        )
-                    )
+                    .font(.headline)
                     .foregroundColor(
                         Color("text")
                     )
 
-
                 Spacer()
 
-
-
                 Text("AVG")
-                    .font(
-                        .system(
-                            size: 14
-                        )
-                    )
+                    .font(.subheadline)
                     .foregroundColor(
                         Color("small text")
                     )
             }
 
-
-
-
-
-
             HStack(
                 alignment: .bottom
             ) {
 
-
                 ForEach(viewModel.weeklyData) { item in
 
-
                     VStack(spacing: 8) {
-
 
                         Capsule()
                             .fill(
@@ -181,20 +114,12 @@ struct TrendsView: View {
                                     )
                             )
 
-
-
                         Text(item.day)
-                            .font(
-                                .system(
-                                    size: 13,
-                                    weight: .medium
-                                )
-                            )
+                            .font(.footnote.weight(.medium))
                             .foregroundColor(
                                 Color("small text")
                             )
                     }
-
 
                     Spacer()
                 }
@@ -215,55 +140,30 @@ struct TrendsView: View {
         )
     }
 
-
-
-
-
-
-
-
-
     // MARK: - Top Triggers
 
-
     private var topTriggersCard: some View {
-
 
         VStack(
             alignment: .leading,
             spacing: 14
         ) {
 
-
-
             HStack(spacing: 8) {
-
 
                 Image(
                     systemName: "sparkles"
                 )
 
-
                 Text("Top Triggers")
-                    .font(
-                        .system(
-                            size: 16,
-                            weight: .semibold
-                        )
-                    )
+                    .font(.headline)
 
             }
             .foregroundColor(
                 Color("text")
             )
 
-
-
-
-
-
             ForEach(viewModel.topTriggers) { trigger in
-
 
                 triggerRow(
                     trigger
@@ -288,25 +188,13 @@ struct TrendsView: View {
         )
     }
 
-
-
-
-
-
-
-
     // MARK: - Row
-
 
     private func triggerRow(
         _ trigger: TopTrigger
     ) -> some View {
 
-
-
         HStack(spacing: 12) {
-
-
 
             Image(
                 systemName: trigger.icon
@@ -318,79 +206,49 @@ struct TrendsView: View {
             )
             .frame(width: 22)
 
-
-
-
-
             VStack(
                 alignment: .leading,
                 spacing: 4
             ) {
 
-
                 Text(trigger.title)
-                    .font(
-                        .system(size: 15)
-                    )
+                    .font(.subheadline)
                     .foregroundColor(
                         Color("text")
                     )
 
-
-
                 Text(trigger.subtitle)
-                    .font(
-                        .system(size: 13)
-                    )
+                    .font(.footnote)
                     .foregroundColor(
                         Color("small text")
                     )
             }
 
-
-
             Spacer()
-
-
 
             Text(
                 "\(Int(trigger.percentage * 100))%"
             )
-            .font(
-                .system(
-                    size: 13,
-                    weight: .medium
-                )
-            )
+            .font(.footnote.weight(.medium))
             .foregroundColor(
                 Color("small text")
             )
         }
     }
 
-
-
-
-
-
-
     private func levelColor(
         _ level: TriggerLevel
     ) -> Color {
 
-
         switch level {
-
 
         case .low:
 
             return Color("ColorG")
 
-
         case .moderate:
 
             return Color("ColorY")
-
 
         case .high:
 
@@ -398,12 +256,6 @@ struct TrendsView: View {
         }
     }
 }
-
-
-
-
-
-
 
 #Preview {
 

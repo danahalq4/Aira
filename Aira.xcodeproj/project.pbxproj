@@ -87,13 +87,6 @@
 			);
 			target = 45DABC272FBC8BDB00C3A8C1 /* AiraWatch Watch App */;
 		};
-		CE906A752FD0DE9800AC5EAA /* Exceptions for "AiraWatch Watch App" folder in "AiraWatch Watch App" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"AiraWatch-Watch-App-Info.plist",
-			);
-			target = 45DABC272FBC8BDB00C3A8C1 /* AiraWatch Watch App */;
-		};
 		CEE023342FBC8F8900D6EFAC /* Exceptions for "Aira" folder in "Aira" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -106,9 +99,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		45DABC292FBC8BDB00C3A8C1 /* AiraWatch Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				CE906A752FD0DE9800AC5EAA /* Exceptions for "AiraWatch Watch App" folder in "AiraWatch Watch App" target */,
-			);
 			path = "AiraWatch Watch App";
 			sourceTree = "<group>";
 		};

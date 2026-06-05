@@ -145,12 +145,7 @@ struct HomeView: View {
 
 
                     Text("Symptom")
-                        .font(
-                            .system(
-                                size: 28,
-                                weight: .bold
-                            )
-                        )
+                        .font(.largeTitle.weight(.bold))
                         .foregroundColor(
                             Color("text")
                         )
@@ -158,9 +153,7 @@ struct HomeView: View {
 
 
                     Text("Log")
-                        .font(
-                            .system(size: 16)
-                        )
+                        .font(.body)
                         .foregroundColor(
                             Color("small text")
                         )
@@ -247,12 +240,7 @@ struct HomeView: View {
                         Text(
                             viewModel.selectedDateTitle
                         )
-                        .font(
-                            .system(
-                                size: 16,
-                                weight: .semibold
-                            )
-                        )
+                        .font(.headline)
                         .foregroundColor(
                             Color("text")
                         )
@@ -262,13 +250,10 @@ struct HomeView: View {
                         Spacer()
 
 
-
                         Text(
                             viewModel.loggedCountText
                         )
-                        .font(
-                            .system(size: 13)
-                        )
+                        .font(.footnote)
                         .foregroundColor(
                             Color("small text")
                         )
@@ -330,14 +315,11 @@ struct HomeView: View {
                             HStack(spacing: 14) {
 
 
-
                                 Image(
                                     systemName:
                                     "exclamationmark.triangle.fill"
                                 )
-                                .font(
-                                    .system(size: 24)
-                                )
+                                .font(.title2)
                                 .foregroundColor(
                                     alertColor(
                                         alert
@@ -354,26 +336,17 @@ struct HomeView: View {
                                 ) {
 
 
-
                                     Text("Alert")
-                                        .font(
-                                            .system(
-                                                size: 16,
-                                                weight: .semibold
-                                            )
-                                        )
+                                        .font(.headline)
                                         .foregroundColor(
                                             Color("text")
                                         )
 
 
-
                                     Text(
                                         alert.label
                                     )
-                                    .font(
-                                        .system(size: 13)
-                                    )
+                                    .font(.footnote)
                                     .foregroundColor(
                                         Color("small text")
                                     )
@@ -386,16 +359,10 @@ struct HomeView: View {
 
 
 
-
                                 Text(
                                     "\(Int(alert.score))%"
                                 )
-                                .font(
-                                    .system(
-                                        size: 15,
-                                        weight: .bold
-                                    )
-                                )
+                                .font(.subheadline.weight(.bold))
                                 .foregroundColor(
                                     Color("text")
                                 )

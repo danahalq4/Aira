@@ -11,33 +11,30 @@ struct CalendarMonthView: View {
     @ObservedObject var viewModel: CalendarViewModel
     var onPlusTapped: (() -> Void)? = nil
 
-    // New: callback to indicate if a given day has symptoms
     var hasSymptoms: ((Date) -> Bool)? = nil
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 6, alignment: .center), count: 7)
 
     var body: some View {
         VStack(spacing: 6) {
-            // زر + مستقل في الأعلى، كبير ومثبت يمين
             HStack {
                 Spacer()
                 Button {
                     onPlusTapped?()
                 } label: {
                     Image(systemName: "plus")
-                        .font(.system(size: 22, weight: .bold)) // أيقونة كبيرة
-                        .foregroundColor(.white)                 // الأيقونة بيضاء
-                        .frame(width: 42, height: 42)            // زر كبير
+                        .font(.title2.weight(.bold))
+                        .foregroundColor(.white)
+                        .frame(width: 42, height: 42)
                         .background(
                             Circle()
-                                .fill(Color.accentColor)         // الخلفية من AccentColor
+                                .fill(Color.accentColor)
                         )
                 }
                 .accessibilityLabel("Add")
             }
             .padding(.horizontal, 4)
 
-            // شريط العنوان مع أسهم التنقل
             HStack(alignment: .center, spacing: 0) {
                 Button {
                     viewModel.goToPreviousMonth()
@@ -65,7 +62,6 @@ struct CalendarMonthView: View {
             }
             .padding(.horizontal, 2)
 
-            // عناوين أيام الأسبوع
             HStack(spacing: 0) {
                 ForEach(viewModel.weekdaySymbols(), id: \.self) { symbol in
                     Text(symbol)
@@ -75,7 +71,6 @@ struct CalendarMonthView: View {
                 }
             }
 
-            // بطاقة التقويم
             LazyVGrid(columns: columns, spacing: 6) {
                 ForEach(viewModel.daysInMonth(), id: \.self) { date in
                     DayCell(
@@ -111,7 +106,7 @@ struct CalendarMonthView: View {
                 ZStack {
                     if isSelected {
                         Circle()
-                            .fill(Color.accentColor) // لون التحديد من Assets
+                            .fill(Color.accentColor)
                             .frame(width: 30, height: 30)
                     }
                     Text("\(day)")
@@ -121,11 +116,10 @@ struct CalendarMonthView: View {
                         .frame(width: 32, height: 32)
                 }
 
-                // مؤشر صغير تحت اليوم إذا فيه أعراض
                 Circle()
                     .fill(Color.accentColor)
                     .frame(width: 5, height: 5)
-                    .opacity(hasSymptoms ? 1 : 0) // تظهر فقط عند وجود أعراض
+                    .opacity(hasSymptoms ? 1 : 0)
             }
             .frame(maxWidth: .infinity, minHeight: 40)
             .opacity(isCurrentMonth ? 1 : 0.4)

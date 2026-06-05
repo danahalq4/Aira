@@ -17,7 +17,6 @@ struct CustomSymptomsPopup: View {
         NavigationStack {
             VStack(spacing: 16) {
 
-                // Add new custom symptom
                 HStack(spacing: 8) {
                     TextField("Add a custom symptom", text: $newSymptom)
                         .textInputAutocapitalization(.words)
@@ -28,12 +27,11 @@ struct CustomSymptomsPopup: View {
 
                     Button(action: addNew) {
                         Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 22, weight: .semibold))
+                            .font(.title2.weight(.semibold))
                     }
                     .disabled(trimmedNew.isEmpty)
                 }
 
-                // Existing custom symptoms list with selection
                 if customSymptoms.isEmpty {
                     Text("No custom symptoms yet. Add one above.")
                         .font(.footnote)
@@ -80,7 +78,6 @@ struct CustomSymptomsPopup: View {
         let candidate = trimmedNew
         guard !candidate.isEmpty else { return }
 
-        // Prevent duplicates (case-insensitive)
         if customSymptoms.contains(where: { $0.caseInsensitiveCompare(candidate) == .orderedSame }) {
             showDuplicateAlert = true
             return

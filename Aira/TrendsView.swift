@@ -1,4 +1,3 @@
-//
 //  TrendsView.swift
 //  Aira
 //
@@ -10,11 +9,13 @@ struct TrendsView: View {
     @StateObject private var viewModel =
     TrendsViewModel()
 
+
     var body: some View {
 
         VStack(spacing: 0) {
 
             headerView
+
 
             ScrollView(showsIndicators: false) {
 
@@ -23,7 +24,6 @@ struct TrendsView: View {
                     asthmaScoreCard
 
                     topTriggersCard
-
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
@@ -35,6 +35,7 @@ struct TrendsView: View {
                 .ignoresSafeArea()
         )
     }
+
 
     // MARK: - Header
 
@@ -53,12 +54,16 @@ struct TrendsView: View {
                         Color("small text")
                     )
 
+
                 Text("This Week")
-                    .font(.largeTitle.weight(.bold))
+                    .font(
+                        .largeTitle.weight(.bold)
+                    )
                     .foregroundColor(
                         Color("text")
                     )
             }
+
 
             Spacer()
         }
@@ -66,6 +71,8 @@ struct TrendsView: View {
         .padding(.top, 16)
         .padding(.bottom, 8)
     }
+
+
 
     // MARK: - Asthma Score Card
 
@@ -84,7 +91,9 @@ struct TrendsView: View {
                         Color("text")
                     )
 
+
                 Spacer()
+
 
                 Text("AVG")
                     .font(.subheadline)
@@ -93,70 +102,157 @@ struct TrendsView: View {
                     )
             }
 
+
+
             ZStack {
 
-                // Grid Lines
+
+                // MARK: Background Lines
+
                 VStack(spacing: 0) {
 
+
                     HStack {
+
                         Text("High")
                             .font(.caption2)
-                            .foregroundColor(Color("small text"))
+                            .foregroundColor(
+                                Color("small text")
+                            )
+                            .frame(
+                                width: 60,
+                                alignment: .leading
+                            )
+
 
                         Rectangle()
-                            .fill(Color("small text").opacity(0.2))
+                            .fill(
+                                Color("small text")
+                                    .opacity(0.2)
+                            )
                             .frame(height: 1)
                     }
 
+
+
                     Spacer()
 
+
+
                     HStack {
+
                         Text("Medium")
                             .font(.caption2)
-                            .foregroundColor(Color("small text"))
+                            .foregroundColor(
+                                Color("small text")
+                            )
+                            .frame(
+                                width: 60,
+                                alignment: .leading
+                            )
+
 
                         Rectangle()
-                            .fill(Color("small text").opacity(0.2))
+                            .fill(
+                                Color("small text")
+                                    .opacity(0.2)
+                            )
                             .frame(height: 1)
                     }
+
+
 
                     Spacer()
 
+
+
                     HStack {
+
                         Text("Low")
                             .font(.caption2)
-                            .foregroundColor(Color("small text"))
+                            .foregroundColor(
+                                Color("small text")
+                            )
+                            .frame(
+                                width: 60,
+                                alignment: .leading
+                            )
+
 
                         Rectangle()
-                            .fill(Color("small text").opacity(0.2))
+                            .fill(
+                                Color("small text")
+                                    .opacity(0.2)
+                            )
                             .frame(height: 1)
                     }
+
+
+                    // space for days
+                    Spacer()
+                        .frame(height: 28)
                 }
 
-                HStack(alignment: .bottom) {
 
-                    ForEach(viewModel.weeklyData) { item in
+
+                // MARK: Real Chart
+
+                HStack(
+                    alignment: .bottom,
+                    spacing: 0
+                ) {
+
+
+                    Spacer()
+                        .frame(width: 60)
+
+
+
+                    ForEach(
+                        viewModel.weeklyData
+                    ) { item in
+
 
                         VStack(spacing: 8) {
 
+
+                            Spacer()
+
+
+
                             Capsule()
-                                .fill(Color("ColorB"))
+                                .fill(
+                                    Color("ColorB")
+                                )
                                 .frame(
-                                    width: 22,
-                                    height: max(25, item.score * 1.2)
+                                    width: 24,
+                                    height: max(
+                                        20,
+                                        item.score * 1.4
+                                    )
                                 )
 
-                            Text(item.day)
-                                .font(.footnote.weight(.medium))
-                                .foregroundColor(Color("small text"))
-                        }
 
-                        Spacer()
+
+                            Text(item.day)
+                                .font(
+                                    .caption
+                                        .weight(.medium)
+                                )
+                                .foregroundColor(
+                                    Color("small text")
+                                )
+                                .frame(
+                                    height: 20
+                                )
+                        }
+                        .frame(
+                            maxWidth: .infinity
+                        )
                     }
                 }
             }
-            .frame(height: 170)
-
+            .frame(height: 200)
         }
         .padding(20)
         .background(
@@ -171,7 +267,11 @@ struct TrendsView: View {
         )
     }
 
+
+
+
     // MARK: - Top Triggers
+
 
     private var topTriggersCard: some View {
 
@@ -180,27 +280,31 @@ struct TrendsView: View {
             spacing: 14
         ) {
 
+
             HStack(spacing: 8) {
+
 
                 Image(
                     systemName: "sparkles"
                 )
 
+
                 Text("Top Triggers")
                     .font(.headline)
-
             }
             .foregroundColor(
                 Color("text")
             )
 
-            ForEach(viewModel.topTriggers) { trigger in
 
-                triggerRow(
-                    trigger
-                )
+
+            ForEach(
+                viewModel.topTriggers
+            ) { trigger in
+
+
+                triggerRow(trigger)
             }
-
         }
         .padding(20)
         .frame(
@@ -219,13 +323,20 @@ struct TrendsView: View {
         )
     }
 
+
+
+
+
     // MARK: - Row
+
 
     private func triggerRow(
         _ trigger: TopTrigger
     ) -> some View {
 
+
         HStack(spacing: 12) {
+
 
             Image(
                 systemName: trigger.icon
@@ -237,16 +348,21 @@ struct TrendsView: View {
             )
             .frame(width: 22)
 
+
+
             VStack(
                 alignment: .leading,
                 spacing: 4
             ) {
+
 
                 Text(trigger.title)
                     .font(.subheadline)
                     .foregroundColor(
                         Color("text")
                     )
+
+
 
                 Text(trigger.subtitle)
                     .font(.footnote)
@@ -255,31 +371,45 @@ struct TrendsView: View {
                     )
             }
 
+
+
             Spacer()
+
+
 
             Text(
                 "\(Int(trigger.percentage * 100))%"
             )
-            .font(.footnote.weight(.medium))
+            .font(
+                .footnote.weight(.medium)
+            )
             .foregroundColor(
                 Color("small text")
             )
         }
     }
 
+
+
+
+
     private func levelColor(
         _ level: TriggerLevel
     ) -> Color {
 
+
         switch level {
+
 
         case .low:
 
             return Color("ColorG")
 
+
         case .moderate:
 
             return Color("ColorY")
+
 
         case .high:
 
@@ -287,6 +417,8 @@ struct TrendsView: View {
         }
     }
 }
+
+
 
 #Preview {
 

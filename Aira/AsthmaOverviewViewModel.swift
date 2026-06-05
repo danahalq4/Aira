@@ -20,8 +20,7 @@ final class AsthmaOverviewViewModel: ObservableObject {
     @Published private(set) var scoreLabel: String = "—"
 
     @Published private(set) var airQualityMessage =
-    "Why is the asthma risk —?"
-
+    "Why is the asthma risk ?"
     // HOME (Air only)
     @Published private(set) var triggers: [AsthmaTrigger] = []
 
@@ -444,16 +443,17 @@ final class AsthmaOverviewViewModel: ObservableObject {
     ) {
 
 
-
-
         score =
         result.score
-
-
 
         scoreLabel =
         result.label
 
+        airQualityMessage =
+        String(
+            format: NSLocalizedString("Why is the asthma risk %@?", comment: ""),
+            NSLocalizedString(result.label.lowercased(), comment: "")
+        )
 
 
 
@@ -527,12 +527,7 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
 
 
-        airQualityMessage =
-        "Why is the asthma risk \(result.label.lowercased())?"
-
-
-
-
+      
 
 
 

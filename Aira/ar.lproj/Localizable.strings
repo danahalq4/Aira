@@ -1,0 +1,267 @@
+"Asthma" = "الربو";
+"Overview" = "نظرة عامة";
+"Asthma Risk" = "خطر الربو";
+"Good" = "جيد";
+"Moderate" = "متوسط";
+"High Risk" = "خطر مرتفع";
+"Critical Risk" = "خطر شديد";
+
+"Why is the asthma risk good?" = "لماذا خطر الربو منخفض؟";
+"Why is the asthma risk moderate?" = "لماذا خطر الربو متوسط؟";
+"Why is the asthma risk high?" = "لماذا خطر الربو مرتفع؟";
+
+"Today's Triggers" = "محفزات اليوم";
+"Air Quality" = "جودة الهواء";
+"Humidity" = "الرطوبة";
+"Temperature" = "درجة الحرارة";
+"Wind Speed" = "سرعة الرياح";
+"Pollen" = "حبوب اللقاح";
+"Tree Pollen" = "حبوب لقاح الأشجار";
+"Grass Pollen" = "حبوب لقاح الأعشاب";
+"Weed Pollen" = "حبوب لقاح الحشائش";
+"AQI" = "مؤشر جودة الهواء";
+
+"Air" = "الهواء";
+"Log" = "السجل";
+"Trends" = "الاتجاهات";
+
+"Symptoms" = "الأعراض";
+"Add Symptom" = "إضافة عرض";
+"Save" = "حفظ";
+"Cancel" = "إلغاء";
+"Done" = "تم";
+"Delete" = "حذف";
+"Edit" = "تعديل";
+
+"Date" = "التاريخ";
+"Time" = "الوقت";
+"Notes" = "ملاحظات";
+
+"Alert" = "تنبيه";
+"Alerts" = "التنبيهات";
+"Critical Asthma Alert" = "تنبيه ربو خطير";
+"High Asthma Risk" = "ارتفاع خطر الربو";
+
+"Your asthma risk is increasing. Check your triggers." = "خطر الربو لديك يزداد. تحقق من المحفزات.";
+"Multiple asthma triggers are high. Check your recommendations." = "توجد عدة محفزات للربو مرتفعة. تحقق من التوصيات.";
+
+"Sleep" = "النوم";
+"Heart Rate" = "معدل نبض القلب";
+"Steps" = "الخطوات";
+"Respiratory Rate" = "معدل التنفس";
+
+"Low" = "منخفض";
+"High" = "مرتفع";
+"Fair" = "مقبول";
+"Severe" = "شديد";
+
+"Recommendations" = "التوصيات";
+"Check your recommendations" = "تحقق من التوصيات";
+"No Data" = "لا توجد بيانات";
+"No alerts yet" = "لا توجد تنبيهات بعد";
+"Moderate" = "متوسط";
+
+"Why is the asthma risk moderate?" = "لماذا خطر الربو متوسط؟";
+
+"Air Quality" = "جودة الهواء";
+"Humidity" = "الرطوبة";
+"Temperature" = "درجة الحرارة";
+"Wind Speed" = "سرعة الرياح";
+"Pollen" = "حبوب اللقاح";
+
+"Your Weekly Trends" = "اتجاهاتك الأسبوعية";
+"This Week" = "هذا الأسبوع";
+"Asthma Score" = "درجة الربو";
+"Top Triggers" = "أكثر المحفزات";
+
+"Symptom" = "الأعراض";
+
+"Each colored gap shows what's pulling your score down" = "كل لون يوضح العامل الذي يخفض نتيجتك";
+
+"Humidity asthma trigger risk" = "خطر محفز الرطوبة للربو";
+"Moderate air quality" = "جودة هواء متوسطة";
+"Temperature may trigger symptoms" = "درجة الحرارة قد تسبب الأعراض";
+"Wind may carry pollen" = "الرياح قد تحمل حبوب اللقاح";
+"Fair" = "متوسط";
+"Very Severe" = "شديد جدًا";
+
+"How are you feeling?" = "كيف تشعر؟";
+"Log Symptom" = "تسجيل الأعراض";
+"Save Symptom" = "حفظ الأعراض";
+"Selected" = "المحدد";
+
+"Wheezing" = "صفير التنفس";
+"Cough" = "السعال";
+"Chest Tightness" = "ضيق الصدر";
+"Shortness of Breath" = "ضيق التنفس";
+"Fatigue" = "الإرهاق";
+"Other" = "أخرى";
+
+"Severity" = "الشدة";
+"Moderate" = "متوسط";
+"Severe" = "شديد";
+"Time" = "الوقت";
+
+"Inhaler Reminder" = "تذكير البخاخ";
+"Use your inhaler as prescribed" = "استخدم البخاخ حسب الوصفة";
+
+"Critical asthma risk detected. Review your recommendations." = "تم اكتشاف خطر ربو شديد. راجع توصياتك.";
+"High asthma risk detected. Check your recommendations." = "تم اكتشاف خطر ربو مرتفع. تحقق من توصياتك.";
+
+"Moderate air quality" = "جودة الهواء متوسطة";
+"Comfortable temperature" = "درجة حرارة مناسبة";
+"Calm wind" = "رياح هادئة";
+
+"Tree pollen: 2" = "لقاح الأشجار: 2";
+"Grass pollen: 1" = "لقاح الأعشاب: 1";
+"Weed pollen: 0" = "لقاح الحشائش: 0";
+/* AddSymptomView */
+
+"How are you feeling?" = "كيف تشعر؟";
+
+"Wheezing" = "صفير التنفس";
+"Cough" = "السعال";
+"Chest Tightness" = "ضيق الصدر";
+"Shortness of Breath" = "ضيق التنفس";
+"Fatigue" = "الإرهاق";
+"Other" = "أخرى";
+
+"Severity" = "الشدة";
+"Moderate" = "متوسط";
+"Severe" = "شديد";
+"Very Severe" = "شديد جدًا";
+
+"Time" = "الوقت";
+
+"Selected" = "المحدد";
+"Save Symptom" = "حفظ الأعراض";
+
+"Log Symptom" = "تسجيل الأعراض";
+
+
+/* AsthmaOverviewView */
+
+"Asthma" = "الربو";
+"Overview" = "نظرة عامة";
+
+"Asthma Risk" = "خطر الربو";
+
+"Today's Triggers" = "محفزات اليوم";
+
+"Inhaler Reminder" = "تذكير البخاخ";
+
+
+/* Score Labels */
+
+"Good" = "جيد";
+"Fair" = "متوسط";
+"Low" = "منخفض";
+"High" = "مرتفع";
+
+
+/* Trigger names */
+
+"Air Quality" = "جودة الهواء";
+"Humidity" = "الرطوبة";
+"Temperature" = "درجة الحرارة";
+"Wind Speed" = "سرعة الرياح";
+"Pollen" = "حبوب اللقاح";
+
+
+/* Air detail messages */
+
+"Why is the asthma risk good?" = "لماذا خطر الربو منخفض؟";
+"Why is the asthma risk fair?" = "لماذا خطر الربو متوسط؟";
+"Why is the asthma risk moderate?" = "لماذا خطر الربو متوسط؟";
+"Why is the asthma risk high?" = "لماذا خطر الربو مرتفع؟";
+
+
+/* Reminder messages */
+
+"Use your inhaler as prescribed" = "استخدم البخاخ حسب التعليمات";
+
+"Critical asthma risk detected. Review your recommendations." =
+"تم اكتشاف خطر ربو شديد. راجع التوصيات.";
+
+"High asthma risk detected. Check your recommendations." =
+"تم اكتشاف خطر ربو مرتفع. تحقق من التوصيات.";
+
+
+/* Trigger descriptions */
+
+"Moderate air quality" =
+"جودة الهواء متوسطة";
+
+"Temperature may trigger symptoms" =
+"درجة الحرارة قد تسبب الأعراض";
+
+"Comfortable temperature" =
+"درجة الحرارة مناسبة";
+
+"Wind may carry pollen" =
+"الرياح قد تحمل حبوب اللقاح";
+
+"Calm wind" =
+"رياح هادئة";
+
+
+/* Pollen details */
+
+"Tree pollen" = "لقاح الأشجار";
+"Grass pollen" = "لقاح الأعشاب";
+"Weed pollen" = "لقاح الحشائش";
+
+
+/* Risk levels */
+
+"High Risk" = "خطر مرتفع";
+"Critical Risk" = "خطر شديد";
+/* Air detail */
+"Fair" = "متوسط";
+
+"Humidity" = "الرطوبة";
+"Air Quality" = "جودة الهواء";
+"Activity" = "النشاط";
+"Temperature" = "درجة الحرارة";
+"Wind Speed" = "سرعة الرياح";
+"Pollen" = "حبوب اللقاح";
+
+"Humidity asthma trigger risk" = "خطر محفز الرطوبة للربو";
+"Moderate air quality" = "جودة الهواء متوسطة";
+"Comfortable temperature" = "درجة حرارة مناسبة";
+"Calm wind" = "رياح هادئة";
+
+"Low" = "منخفض";
+
+
+/* Log symptom */
+"Log Symptom" = "تسجيل الأعراض";
+"How are you feeling?" = "كيف تشعر؟";
+
+"Chest Tightness" = "ضيق الصدر";
+"Cough" = "السعال";
+"Wheezing" = "صفير التنفس";
+"Other" = "أخرى";
+"Fatigue" = "الإرهاق";
+"Shortness of Breath" = "ضيق التنفس";
+
+"Severity" = "الشدة";
+"Very Severe" = "شديد جدًا";
+"Severe" = "شديد";
+"Moderate" = "متوسط";
+
+"Selected:" = "المحدد:";
+"Save Symptom" = "حفظ الأعراض";
+
+
+/* units */
+"steps" = "خطوة";
+
+"Tree pollen" = "لقاح الأشجار";
+"Grass pollen" = "لقاح الأعشاب";
+"Weed pollen" = "لقاح الحشائش";
+"Why is the asthma risk %@?" = "لماذا خطر الربو %@؟";
+
+"fair" = "متوسط";
+"good" = "جيد";
+"poor" = "سيئ";

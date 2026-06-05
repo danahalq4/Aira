@@ -231,7 +231,7 @@ struct SymptomTextCard: View {
     let textColor: Color
 
     var body: some View {
-        Text(title)
+        Text(LocalizedStringKey(title))
             .font(.system(size: 15, weight: .medium))
             .foregroundColor(textColor)
             .multilineTextAlignment(.center)

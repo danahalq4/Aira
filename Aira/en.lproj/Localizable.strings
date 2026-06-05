@@ -1,0 +1,60 @@
+"Asthma" = "Asthma";
+"Overview" = "Overview";
+"Asthma Risk" = "Asthma Risk";
+
+"Good" = "Good";
+"Moderate" = "Moderate";
+"High Risk" = "High Risk";
+"Critical Risk" = "Critical Risk";
+
+"Today's Triggers" = "Today's Triggers";
+
+"Air Quality" = "Air Quality";
+"Humidity" = "Humidity";
+"Temperature" = "Temperature";
+"Wind Speed" = "Wind Speed";
+"Pollen" = "Pollen";
+"Tree Pollen" = "Tree Pollen";
+"Grass Pollen" = "Grass Pollen";
+"Weed Pollen" = "Weed Pollen";
+"AQI" = "AQI";
+
+"Log" = "Log";
+"Trends" = "Trends";
+"Recommendations" = "Recommendations";
+
+"Symptoms" = "Symptoms";
+"Add Symptom" = "Add Symptom";
+
+"Save" = "Save";
+"Cancel" = "Cancel";
+"Done" = "Done";
+"Delete" = "Delete";
+"Edit" = "Edit";
+
+"Date" = "Date";
+"Time" = "Time";
+"Notes" = "Notes";
+
+"Alert" = "Alert";
+"Alerts" = "Alerts";
+
+"Critical Asthma Alert" = "Critical Asthma Alert";
+"High Asthma Risk" = "High Asthma Risk";
+
+"Your asthma risk is increasing. Check your triggers." = "Your asthma risk is increasing. Check your triggers.";
+
+"Multiple asthma triggers are high. Check your recommendations." = "Multiple asthma triggers are high. Check your recommendations.";
+
+"No Data" = "No Data";
+"No alerts yet" = "No alerts yet";
+
+"Sleep" = "Sleep";
+"Heart Rate" = "Heart Rate";
+"Steps" = "Steps";
+"Respiratory Rate" = "Respiratory Rate";
+
+"Low" = "Low";
+"High" = "High";
+"Fair" = "Fair";
+"Severe" = "Severe";

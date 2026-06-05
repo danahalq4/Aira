@@ -485,7 +485,7 @@ private struct ScoreRingView: View {
                     )
 
 
-                Text(label)
+                Text(LocalizedStringKey(label))
                     .font(
                         .system(size: 15)
                     )
@@ -546,12 +546,12 @@ private struct TriggerRowView: View {
             ) {
 
 
-                Text(trigger.name)
+                Text(LocalizedStringKey(trigger.name))
                     .font(.system(size: 15))
                     .foregroundColor(Color("text"))
 
 
-                Text(trigger.displayValue)
+                Text(LocalizedStringKey(trigger.displayValue))
                     .font(.system(size: 13))
                     .foregroundColor(
                         Color("small text")

@@ -93,35 +93,66 @@ struct TrendsView: View {
                     )
             }
 
-            HStack(
-                alignment: .bottom
-            ) {
+            ZStack {
 
-                ForEach(viewModel.weeklyData) { item in
+                // Grid Lines
+                VStack(spacing: 0) {
 
-                    VStack(spacing: 8) {
+                    HStack {
+                        Text("High")
+                            .font(.caption2)
+                            .foregroundColor(Color("small text"))
 
-                        Capsule()
-                            .fill(
-                                Color("ColorB")
-                            )
-                            .frame(
-                                width: 22,
-                                height:
-                                    max(
-                                        25,
-                                        item.score * 1.2
-                                    )
-                            )
-
-                        Text(item.day)
-                            .font(.footnote.weight(.medium))
-                            .foregroundColor(
-                                Color("small text")
-                            )
+                        Rectangle()
+                            .fill(Color("small text").opacity(0.2))
+                            .frame(height: 1)
                     }
 
                     Spacer()
+
+                    HStack {
+                        Text("Medium")
+                            .font(.caption2)
+                            .foregroundColor(Color("small text"))
+
+                        Rectangle()
+                            .fill(Color("small text").opacity(0.2))
+                            .frame(height: 1)
+                    }
+
+                    Spacer()
+
+                    HStack {
+                        Text("Low")
+                            .font(.caption2)
+                            .foregroundColor(Color("small text"))
+
+                        Rectangle()
+                            .fill(Color("small text").opacity(0.2))
+                            .frame(height: 1)
+                    }
+                }
+
+                HStack(alignment: .bottom) {
+
+                    ForEach(viewModel.weeklyData) { item in
+
+                        VStack(spacing: 8) {
+
+                            Capsule()
+                                .fill(Color("ColorB"))
+                                .frame(
+                                    width: 22,
+                                    height: max(25, item.score * 1.2)
+                                )
+
+                            Text(item.day)
+                                .font(.footnote.weight(.medium))
+                                .foregroundColor(Color("small text"))
+                        }
+
+                        Spacer()
+                    }
                 }
             }
             .frame(height: 170)

@@ -11,7 +11,16 @@ struct WatchAirDetailView: View {
         var rows: [RiskTrigger] = []
 
         if let temp = riskTriggers.first(where: { $0.name == "Temperature" }) {
-            rows.append(temp)
+            rows.append(
+                RiskTrigger(
+                    name: "Temp",
+                    icon: temp.icon,
+                    level: temp.level,
+                    displayValue: temp.displayValue,
+                    deduction: temp.deduction,
+                    reasonText: temp.reasonText
+                )
+            )
         }
 
         if let humidity = riskTriggers.first(where: { $0.name == "Humidity" }) {
@@ -110,4 +119,4 @@ private struct WatchGeneralTriggerRow: View {
     }
 }
 
-#endif
+#endif // os(watchOS)

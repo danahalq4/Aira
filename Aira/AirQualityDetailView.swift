@@ -411,10 +411,7 @@ private struct AnnotatedRingView: View {
                 $0 + $1.deduction
             }
 
-
-        return
-        base +
-        Double(prior) / 100
+        return base + Double(prior) / 100
     }
 }
 

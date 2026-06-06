@@ -549,6 +549,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "AiraWatch Watch App/AiraWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = AiraWatch;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app uses Health data to support asthma monitoring.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Aira saves asthma-related health information.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.danahalqahtani.Aira;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -586,6 +588,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "AiraWatch Watch App/AiraWatch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = AiraWatch;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app uses Health data to support asthma monitoring.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Aira saves asthma-related health information.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.danahalqahtani.Aira;
 				LD_RUNPATH_SEARCH_PATHS = (

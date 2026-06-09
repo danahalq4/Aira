@@ -11,15 +11,22 @@ import Combine
 final class TrendsViewModel: ObservableObject {
 
 
-    // MARK: - Published
-
-
     @Published private(set)
     var topTriggers: [TopTrigger] = []
 
 
+
     @Published private(set)
-    var weeklyData: [DailyAsthmaScore] = []
+    var weeklyData: [DailyAsthmaScore] = [
+
+        DailyAsthmaScore(day: "MON", score: 0),
+        DailyAsthmaScore(day: "TUE", score: 0),
+        DailyAsthmaScore(day: "WED", score: 0),
+        DailyAsthmaScore(day: "THU", score: 0),
+        DailyAsthmaScore(day: "FRI", score: 0),
+        DailyAsthmaScore(day: "SAT", score: 0),
+        DailyAsthmaScore(day: "SUN", score: 0)
+    ]
 
 
 
@@ -28,9 +35,6 @@ final class TrendsViewModel: ObservableObject {
 
 
 
-
-
-    // MARK: - Init
 
 
     init() {
@@ -47,53 +51,29 @@ final class TrendsViewModel: ObservableObject {
 
 
 
-
-
-    // MARK: - Weekly Top Triggers
-
-
     private func observeTriggers() {
-
 
 
         TrendsStore.shared
             .$triggers
 
-
-
             .map { triggers in
-
 
 
                 triggers
 
-
-
-                    // بس اللي نقصت السكور
-
                     .filter {
-
                         $0.deduction > 0
                     }
 
-
-
-                    // الأعلى تأثير خلال الأسبوع
-
                     .sorted {
-
                         $0.deduction >
                         $1.deduction
                     }
 
-
-
                     .prefix(3)
 
-
-
                     .map { trigger in
-
 
 
                         TopTrigger(
@@ -101,32 +81,23 @@ final class TrendsViewModel: ObservableObject {
                             icon:
                                 trigger.icon,
 
-
                             title:
                                 trigger.name,
-
 
                             subtitle:
                                 trigger.displayValue,
 
-
                             percentage:
-
                                 min(
-
                                     1,
-
                                     Double(trigger.deduction) / 25
                                 ),
-
 
                             level:
                                 trigger.level
                         )
                     }
             }
-
-
 
             .assign(
                 to: &$topTriggers
@@ -140,16 +111,42 @@ final class TrendsViewModel: ObservableObject {
 
 
 
-
-    // MARK: - Weekly Score
-
-
     private func loadWeeklyScores() {
-
 
 
         TrendsStore.shared
             .$weeklyScores
+
+
+            .map { saved in
+
+
+                let days = [
+                    "MON",
+                    "TUE",
+                    "WED",
+                    "THU",
+                    "FRI",
+                    "SAT",
+                    "SUN"
+                ]
+
+
+                return days.map { day in
+
+
+                    saved.first {
+
+                        $0.day == day
+
+                    } ??
+
+                    DailyAsthmaScore(
+                        day: day,
+                        score: 0
+                    )
+                }
+            }
 
 
             .assign(

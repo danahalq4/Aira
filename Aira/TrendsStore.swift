@@ -7,29 +7,105 @@ import Foundation
 import Combine
 
 
-struct DailyAsthmaScore: Identifiable {
+struct DailyAsthmaScore:
+    Identifiable,
+    Codable {
 
-    let id = UUID()
+
+    let id: UUID
+
+    let date: Date
 
     let day: String
 
     let score: Double
+
+
+
+
+
+    init(
+        id: UUID = UUID(),
+
+        date: Date = Date(),
+
+        day: String,
+
+        score: Double
+    ) {
+
+
+        self.id =
+        id
+
+
+
+        self.date =
+        Calendar
+            .current
+            .startOfDay(
+                for: date
+            )
+
+
+
+        self.day =
+        day
+
+
+
+        self.score =
+        score
+    }
 }
+
+
+
 
 
 
 final class TrendsStore: ObservableObject {
 
 
-    static let shared = TrendsStore()
+    static let shared =
+    TrendsStore()
+
 
 
     @Published var triggers: [RiskTrigger] = []
 
-    @Published var weeklyScores: [DailyAsthmaScore] = []
 
 
-    private init() {}
+    @Published var weeklyScores: [DailyAsthmaScore] = [] {
+
+        didSet {
+
+            saveToStorage()
+        }
+    }
+
+
+
+
+
+    private let storageKey =
+    "weeklyAsthmaScores"
+
+
+
+
+
+
+    private init() {
+
+
+        loadFromStorage()
+    }
+
+
+
+
+
 
 
 
@@ -39,7 +115,9 @@ final class TrendsStore: ObservableObject {
     ) {
 
 
-        self.triggers = triggers
+        self.triggers =
+        triggers
+
 
 
         saveTodayScore(
@@ -51,49 +129,191 @@ final class TrendsStore: ObservableObject {
 
 
 
+
+
+
+
     private func saveTodayScore(
         _ score: Double
     ) {
 
 
-        let formatter = DateFormatter()
+        let calendar =
+        Calendar.current
 
-        formatter.dateFormat = "EEE"
 
 
-        let today =
+        let todayDate =
+        calendar.startOfDay(
+            for: Date()
+        )
+
+
+
+        let formatter =
+        DateFormatter()
+
+
+        formatter.locale =
+        Locale(identifier: "en_US_POSIX")
+
+        formatter.dateFormat =
+        "EEE"
+
+        let todayName =
         formatter
-            .string(from: Date())
+            .string(
+                from: todayDate
+            )
             .uppercased()
 
 
 
+
+
+
+
+        // لو نفس اليوم موجود حدثه
+
         weeklyScores
             .removeAll {
 
-                $0.day == today
+                calendar.isDate(
+                    $0.date,
+                    inSameDayAs:
+                        todayDate
+                )
             }
 
 
 
-        weeklyScores
-            .append(
 
-                DailyAsthmaScore(
 
-                    day: today,
 
-                    score: score
-                )
+        weeklyScores.append(
+
+            DailyAsthmaScore(
+
+                date:
+                    todayDate,
+
+                day:
+                    todayName,
+
+                score:
+                    score
             )
+        )
 
 
 
-        // آخر 7 أيام فقط
 
-        if weeklyScores.count > 7 {
 
-            weeklyScores.removeFirst()
+
+
+        // خذ آخر 7 أيام فقط
+
+        weeklyScores =
+        weeklyScores
+
+            .filter {
+
+
+                guard let diff =
+                    calendar.dateComponents(
+                        [.day],
+                        from:
+                            $0.date,
+                        to:
+                            todayDate
+                    )
+                    .day
+
+                else {
+
+                    return false
+                }
+
+
+                return diff < 7
+            }
+
+
+
+            .sorted {
+
+                $0.date <
+                $1.date
+            }
+    }
+
+
+
+
+
+
+
+
+
+    private func saveToStorage() {
+
+
+        if let data =
+            try? JSONEncoder()
+            .encode(
+                weeklyScores
+            ) {
+
+
+            UserDefaults
+                .standard
+                .set(
+                    data,
+                    forKey:
+                        storageKey
+                )
         }
+    }
+
+
+
+
+
+
+
+
+
+    private func loadFromStorage() {
+
+
+        guard
+
+            let data =
+                UserDefaults
+                .standard
+                .data(
+                    forKey:
+                        storageKey
+                ),
+
+
+            let saved =
+                try? JSONDecoder()
+                .decode(
+                    [DailyAsthmaScore].self,
+                    from:
+                        data
+                )
+
+
+        else {
+
+            return
+        }
+
+
+
+        weeklyScores =
+        saved
     }
 }

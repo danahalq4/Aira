@@ -220,18 +220,30 @@ struct TrendsView: View {
 
 
 
-                            Capsule()
-                                .fill(
-                                    Color("ColorB")
-                                )
-                                .frame(
-                                    width: 24,
-                                    height: max(
-                                        20,
-                                        item.score * 1.4
-                                    )
-                                )
+                            if item.score > 0 {
 
+
+                                Capsule()
+                                    .fill(
+                                        Color("ColorB")
+                                    )
+                                    .frame(
+                                        width: 24,
+                                        height: max(
+                                            20,
+                                            item.score * 1.4
+                                        )
+                                    )
+
+
+                            } else {
+
+
+                                Spacer()
+                                    .frame(
+                                        height: 20
+                                    )
+                            }
 
 
                             Text(item.day)

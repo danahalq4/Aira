@@ -48,14 +48,14 @@ struct TrendsView: View {
                 spacing: 2
             ) {
 
-                Text("Your Weekly Trends")
+                Text("This Week")
                     .font(.body)
                     .foregroundColor(
                         Color("small text")
                     )
 
 
-                Text("This Week")
+                Text("Your Weekly Trends")
                     .font(
                         .largeTitle.weight(.bold)
                     )

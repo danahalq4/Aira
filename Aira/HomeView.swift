@@ -25,10 +25,13 @@ struct HomeView: View {
     AlertHistoryStore.shared
 
 
-    @State private var showingAddSheet = false
+    @State private var showingAddSheet =
+    false
 
 
-    @State private var selectedAlert: AsthmaAlertLog?
+    @State private var selectedAlert:
+    AsthmaAlertLog?
+
 
 
 
@@ -36,12 +39,21 @@ struct HomeView: View {
     var body: some View {
 
 
-        let symptomsForDay = symptomLogs
+        let phoneSymptoms =
+        viewModel.symptomsVM.symptoms(
+            on: viewModel.calendarVM.selectedDate
+        )
 
-            .filter { log in
+
+        let savedSymptoms =
+        symptomLogs
+
+            .filter {
 
                 Calendar.current.isDate(
-                    log.date,
+
+                    $0.date,
+
                     inSameDayAs:
                         viewModel.calendarVM.selectedDate
                 )
@@ -50,20 +62,32 @@ struct HomeView: View {
             .compactMap { log -> Symptom? in
 
 
-                guard let name = log.name else {
+                guard let name =
+                        log.name
+                else {
+
                     return nil
                 }
 
 
                 return Symptom(
-                    name: name,
-                    time: log.date,
+
+                    name:
+                        name,
+
+                    time:
+                        log.date,
+
                     severity:
                         severityFromRaw(
                             log.severityRaw
                         ),
-                    isTracked: true,
-                    iconSystemName: "lungs.fill"
+
+                    isTracked:
+                        true,
+
+                    iconSystemName:
+                        "lungs.fill"
                 )
             }
 
@@ -71,15 +95,9 @@ struct HomeView: View {
 
 
 
-        let alertsForDay =
-        alertStore.alerts.filter { alert in
-
-            Calendar.current.isDate(
-                alert.date,
-                inSameDayAs:
-                    viewModel.calendarVM.selectedDate
-            )
-        }
+        let symptomsForDay =
+        phoneSymptoms +
+        savedSymptoms
 
 
 
@@ -90,17 +108,21 @@ struct HomeView: View {
         VStack(spacing: 0) {
 
 
-            // MARK: Header
+
 
             HStack {
+
 
                 VStack(
                     alignment: .leading,
                     spacing: 2
                 ) {
 
+
                     Text("Symptom")
-                        .font(.largeTitle.weight(.bold))
+                        .font(
+                            .largeTitle.weight(.bold)
+                        )
                         .foregroundColor(
                             Color("text")
                         )
@@ -118,7 +140,6 @@ struct HomeView: View {
             }
             .padding(.horizontal,20)
             .padding(.top,16)
-            .padding(.bottom,8)
 
 
 
@@ -126,10 +147,15 @@ struct HomeView: View {
 
 
 
-            ScrollView(showsIndicators: false) {
+
+            ScrollView(
+                showsIndicators: false
+            ) {
 
 
                 VStack(spacing:16) {
+
+
 
 
                     CalendarMonthView(
@@ -140,57 +166,26 @@ struct HomeView: View {
 
                         onPlusTapped: {
 
-                            showingAddSheet = true
+                            showingAddSheet =
+                            true
                         },
 
 
                         hasSymptoms: { day in
 
-                            symptomLogs.contains { log in
+
+                            symptomLogs.contains {
 
                                 Calendar.current.isDate(
-                                    log.date,
-                                    inSameDayAs: day
+
+                                    $0.date,
+
+                                    inSameDayAs:
+                                        day
                                 )
                             }
                         }
                     )
-                    .padding(.horizontal,16)
-                    .padding(.top,8)
-
-
-
-
-
-
-
-
-                    HStack {
-
-
-                        Text(
-                            viewModel.selectedDateTitle
-                        )
-                        .font(.headline)
-                        .foregroundColor(
-                            Color("text")
-                        )
-
-
-                        Spacer()
-
-
-                        Text(
-                            symptomsForDay.count == 1
-                            ? "1 symptom logged"
-                            : "\(symptomsForDay.count) symptoms logged"
-                        )
-                        .font(.footnote)
-                        .foregroundColor(
-                            Color("small text")
-                        )
-
-                    }
                     .padding(.horizontal,16)
 
 
@@ -208,116 +203,28 @@ struct HomeView: View {
                         deleteAction: { symptom in
 
 
-                            if let log =
-                                symptomLogs.first(
-                                    where: {
-                                        $0.name == symptom.name &&
-                                        $0.date == symptom.time
-                                    }
-                                ) {
+                            viewModel.symptomsVM.delete(
 
-                                modelContext.delete(log)
+                                symptom,
 
-                                try? modelContext.save()
-                            }
+                                on:
+                                    viewModel.calendarVM.selectedDate
+                            )
+
                         }
                     )
                     .padding(.horizontal,16)
 
 
 
-
-
-
-
-
-                    // MARK: Alerts
-
-                    ForEach(alertsForDay) { alert in
-
-
-                        Button {
-
-                            selectedAlert = alert
-
-                        } label: {
-
-
-                            HStack(spacing:14) {
-
-
-                                Image(
-                                    systemName:
-                                    "exclamationmark.triangle.fill"
-                                )
-                                .font(.title2)
-                                .foregroundColor(
-                                    alertColor(alert)
-                                )
-
-
-
-                                VStack(
-                                    alignment:.leading,
-                                    spacing:4
-                                ) {
-
-                                    Text("Alert")
-                                        .font(.headline)
-                                        .foregroundColor(
-                                            Color("text")
-                                        )
-
-
-                                    Text(alert.label)
-                                        .font(.footnote)
-                                        .foregroundColor(
-                                            Color("small text")
-                                        )
-                                }
-
-
-
-                                Spacer()
-
-
-                                Text(
-                                    "\(Int(alert.score))%"
-                                )
-                                .font(
-                                    .subheadline.weight(.bold)
-                                )
-
-
-                                Image(
-                                    systemName:
-                                    "chevron.right"
-                                )
-                            }
-                            .padding(16)
-                            .background(
-
-                                RoundedRectangle(
-                                    cornerRadius:16
-                                )
-                                .fill(
-                                    Color("card")
-                                )
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .padding(.horizontal,16)
-
-
-
-
-                    Spacer(minLength:24)
                 }
             }
         }
 
+
+
         .background(
+
             Color("background")
                 .ignoresSafeArea()
         )
@@ -327,36 +234,72 @@ struct HomeView: View {
 
 
 
-
-        // ADD SYMPTOM
-
         .sheet(
+
             isPresented:
                 $showingAddSheet
+
         ) {
 
 
+
             AddSymptomView {
+
                 selectedNames,
                 selectedSeverityIndex,
                 startTime,
-                _ in
+                endTime in
 
 
 
+
+
+                let severity =
+                severityFromIndex(
+                    selectedSeverityIndex
+                )
+
+
+
+
+
+
+                // يخلي الاختيار واللون والواجهة زي قبل
+                viewModel.symptomsVM.addMany(
+
+                    names:
+                        Array(selectedNames),
+
+                    severity:
+                        severity,
+
+                    time:
+                        startTime,
+
+                    on:
+                        viewModel.calendarVM.selectedDate
+                )
+
+
+
+
+
+
+                // الحفظ الدائم
                 for name in selectedNames {
 
 
-                    let log = SymptomLog(
+                    let log =
+                    SymptomLog(
 
-                        date: startTime,
+                        date:
+                            startTime,
 
-                        name: name,
+                        name:
+                            name,
 
                         severityRaw:
-                            severityFromIndex(
-                                selectedSeverityIndex
-                            ).rawValue
+                            severity.rawValue
                     )
 
 
@@ -364,56 +307,30 @@ struct HomeView: View {
                 }
 
 
-                try? modelContext.save()
+
+
+
+
+                do {
+
+                    try modelContext.save()
+
+
+                    print(
+                        "SYMPTOM SAVED"
+                    )
+
+                } catch {
+
+
+                    print(
+                        "SAVE ERROR:",
+                        error.localizedDescription
+                    )
+                }
             }
         }
-
-
-
-
-
-
-        .sheet(
-            item:
-                $selectedAlert
-        ) { alert in
-
-
-            ALERT(
-
-                riskResult:
-
-                    RiskResult(
-
-                        score:
-                            alert.score,
-
-                        label:
-                            alert.label,
-
-                        triggers:
-                            alert.triggers
-                    )
-            )
-        }
     }
-
-
-
-
-
-
-
-
-    private func alertColor(
-        _ alert: AsthmaAlertLog
-    ) -> Color {
-
-        alert.score < 25
-        ? Color("ColorR")
-        : Color("ColorO")
-    }
-
 
 
 
@@ -421,26 +338,25 @@ struct HomeView: View {
 
 
     private func severityFromIndex(
-        _ idx: Int
+        _ index: Int
     ) -> Severity {
 
 
-        switch idx {
+        switch index {
+
 
         case 0:
             return .mild
 
+
         case 1:
             return .moderate
 
-        case 2:
-            return .severe
 
         default:
-            return .mild
+            return .severe
         }
     }
-
 
 
 
@@ -452,31 +368,11 @@ struct HomeView: View {
     ) -> Severity {
 
 
-        switch raw {
-
-
-        case "mild":
-            return .mild
-
-        case "moderate":
-            return .moderate
-
-        case "severe":
-            return .severe
-
-
-        default:
-            return .mild
-        }
+        Severity(
+            rawValue:
+                raw ?? ""
+        )
+        ??
+        .moderate
     }
-}
-
-
-
-
-
-
-#Preview {
-
-    HomeView()
 }

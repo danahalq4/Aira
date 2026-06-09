@@ -49,19 +49,20 @@ struct TrendsView: View {
             ) {
 
                 Text("This Week")
-                    .font(.body)
-                    .foregroundColor(
-                        Color("small text")
-                    )
-
-
-                Text("Your Weekly Trends")
                     .font(
                         .largeTitle.weight(.bold)
                     )
                     .foregroundColor(
                         Color("text")
                     )
+
+
+                Text("Your Weekly Trends")
+                    .font(.body)
+                    .foregroundColor(
+                        Color("small text")
+                    )
+                   
             }
 
 

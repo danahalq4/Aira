@@ -94,12 +94,10 @@ struct CustomSymptomsPopup: View {
 
         selectedSymptoms.insert(candidate)
 
-
         newSymptom = ""
 
         dismiss()
     }
-
     private func toggleSelection(_ name: String) {
         if selectedSymptoms.contains(name) {
             selectedSymptoms.remove(name)

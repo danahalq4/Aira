@@ -43,7 +43,7 @@ struct AddSymptomView: View {
     ]
     private let otherKey = "Other"
     private var allOptions: [String] {
-        return defaultSymptomsBase + customSymptoms + [otherKey]
+        return defaultSymptomsBase  + [otherKey]
     }
 
     // Hoist columns to a property to avoid recomputation inside the builder
@@ -126,9 +126,15 @@ struct AddSymptomView: View {
     // MARK: - Extracted subviews
 
     private func symptomItemView(for title: String) -> some View {
-        SymptomTextCard(
+
+        let selected =
+        title == otherKey
+        ? selectedSymptoms.contains { customSymptoms.contains($0) }
+        : selectedSymptoms.contains(title)
+
+        return SymptomTextCard(
             title: title,
-            isSelected: selectedSymptoms.contains(title),
+            isSelected: selected,
             cardColor: cardColor,
             selectedColor: Color.accentColor.opacity(0.12),
             textColor: primaryText

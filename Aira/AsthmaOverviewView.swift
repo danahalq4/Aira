@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-
 // MARK: - Root View
 
 struct AsthmaOverviewView: View {
@@ -44,11 +43,13 @@ struct AsthmaOverviewView: View {
                 Color("background")
                     .ignoresSafeArea()
             )
-
             .onAppear {
+
                 viewModel.onAppear()
             }
 
+
+         
             .navigationDestination(
                 isPresented: $viewModel.showAirDetail
             ) {

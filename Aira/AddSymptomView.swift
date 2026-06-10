@@ -42,13 +42,8 @@ struct AddSymptomView: View {
         "Wheezing", "Cough", "Chest Tightness", "Shortness of Breath", "Fatigue"
     ]
     private let otherKey = "Other"
-
     private var allOptions: [String] {
-        let customs: [String] = customSymptoms
-        let defaults: [String] = defaultSymptomsBase.filter { d in
-            !customs.contains(d)
-        }
-        return customs + defaults + [otherKey]
+        return defaultSymptomsBase + [otherKey]
     }
 
     // Hoist columns to a property to avoid recomputation inside the builder
@@ -119,7 +114,6 @@ struct AddSymptomView: View {
                     selectedSymptoms: $selectedSymptoms,
                     onImmediateAdd: { name in
                         selectedSymptoms.insert(name)
-                        onSave([name], selectedSeverity, startTime, endTime)
                     }
                 )
                 .onDisappear {

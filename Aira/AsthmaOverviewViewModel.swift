@@ -2,7 +2,7 @@
 //  AsthmaOverviewViewModel.swift
 //  Aira
 //
-
+import WidgetKit
 import SwiftUI
 import Combine
 import CoreLocation
@@ -448,7 +448,21 @@ final class AsthmaOverviewViewModel: ObservableObject {
 
         scoreLabel =
         result.label
+        let defaults = UserDefaults(
+            suiteName: "group.com.fajr.aleid.Aira"
+        )
 
+        defaults?.set(
+            result.score,
+            forKey: "riskScore"
+        )
+
+        defaults?.set(
+            result.label,
+            forKey: "riskLabel"
+        )
+
+        WidgetCenter.shared.reloadAllTimelines()
         airQualityMessage =
         String(
             format: NSLocalizedString("Why is the asthma risk %@?", comment: ""),

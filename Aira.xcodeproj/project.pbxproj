@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		45DABC482FBC8BDC00C3A8C1 /* AiraWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 45DABC282FBC8BDB00C3A8C1 /* AiraWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CEFC06AD2FD98B6700BA5A4D /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFC06982FD9869900BA5A4D /* WidgetKit.framework */; };
+		CEFC06AE2FD98B6700BA5A4D /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFC069A2FD9869900BA5A4D /* SwiftUI.framework */; };
+		CEFC06BB2FD98B6700BA5A4D /* AiraWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CEFC06AC2FD98B6700BA5A4D /* AiraWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,18 +48,25 @@
 			remoteGlobalIDString = 6993D7B82FB1FA44003E718C;
 			remoteInfo = Aira;
 		};
+		CEFC06B92FD98B6700BA5A4D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6993D7B12FB1FA44003E718C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEFC06AB2FD98B6700BA5A4D;
+			remoteInfo = AiraWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		45DABC492FBC8BDC00C3A8C1 /* Embed Watch Content */ = {
+		CEFC06C02FD98B6700BA5A4D /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
-			dstSubfolderSpec = 16;
+			dstPath = "";
+			dstSubfolderSpec = 13;
 			files = (
-				45DABC482FBC8BDC00C3A8C1 /* AiraWatch Watch App.app in Embed Watch Content */,
+				CEFC06BB2FD98B6700BA5A4D /* AiraWidgetExtension.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed Watch Content";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -69,6 +78,10 @@
 		6993D7B92FB1FA44003E718C /* Aira.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aira.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6993D7C62FB1FA45003E718C /* AiraTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AiraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6993D7D02FB1FA45003E718C /* AiraUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AiraUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEFC06982FD9869900BA5A4D /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		CEFC069A2FD9869900BA5A4D /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		CEFC06AC2FD98B6700BA5A4D /* AiraWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AiraWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEFC06C12FD9DA9E00BA5A4D /* AiraWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AiraWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -100,6 +113,13 @@
 				Info.plist,
 			);
 			target = 6993D7B82FB1FA44003E718C /* Aira */;
+		};
+		CEFC06BF2FD98B6700BA5A4D /* Exceptions for "AiraWidget" folder in "AiraWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CEFC06AB2FD98B6700BA5A4D /* AiraWidgetExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -139,6 +159,14 @@
 		6993D7D32FB1FA45003E718C /* AiraUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = AiraUITests;
+			sourceTree = "<group>";
+		};
+		CEFC06AF2FD98B6700BA5A4D /* AiraWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CEFC06BF2FD98B6700BA5A4D /* Exceptions for "AiraWidget" folder in "AiraWidgetExtension" target */,
+			);
+			path = AiraWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -186,18 +214,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CEFC06A92FD98B6700BA5A4D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CEFC06AE2FD98B6700BA5A4D /* SwiftUI.framework in Frameworks */,
+				CEFC06AD2FD98B6700BA5A4D /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		6993D7B02FB1FA44003E718C = {
 			isa = PBXGroup;
 			children = (
+				CEFC06C12FD9DA9E00BA5A4D /* AiraWidgetExtension.entitlements */,
 				6993D7BB2FB1FA44003E718C /* Aira */,
 				6993D7C92FB1FA45003E718C /* AiraTests */,
 				6993D7D32FB1FA45003E718C /* AiraUITests */,
 				45DABC292FBC8BDB00C3A8C1 /* AiraWatch Watch App */,
 				45DABC372FBC8BDC00C3A8C1 /* AiraWatch Watch AppTests */,
 				45DABC412FBC8BDC00C3A8C1 /* AiraWatch Watch AppUITests */,
+				CEFC06AF2FD98B6700BA5A4D /* AiraWidget */,
+				CEFC06972FD9869900BA5A4D /* Frameworks */,
 				6993D7BA2FB1FA44003E718C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -211,8 +251,18 @@
 				45DABC282FBC8BDB00C3A8C1 /* AiraWatch Watch App.app */,
 				45DABC342FBC8BDC00C3A8C1 /* AiraWatch Watch AppTests.xctest */,
 				45DABC3E2FBC8BDC00C3A8C1 /* AiraWatch Watch AppUITests.xctest */,
+				CEFC06AC2FD98B6700BA5A4D /* AiraWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CEFC06972FD9869900BA5A4D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CEFC06982FD9869900BA5A4D /* WidgetKit.framework */,
+				CEFC069A2FD9869900BA5A4D /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -293,12 +343,13 @@
 				6993D7B52FB1FA44003E718C /* Sources */,
 				6993D7B62FB1FA44003E718C /* Frameworks */,
 				6993D7B72FB1FA44003E718C /* Resources */,
-				45DABC492FBC8BDC00C3A8C1 /* Embed Watch Content */,
+				CEFC06C02FD98B6700BA5A4D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				45DABC472FBC8BDC00C3A8C1 /* PBXTargetDependency */,
+				CEFC06BA2FD98B6700BA5A4D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				6993D7BB2FB1FA44003E718C /* Aira */,
@@ -356,6 +407,28 @@
 			productReference = 6993D7D02FB1FA45003E718C /* AiraUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		CEFC06AB2FD98B6700BA5A4D /* AiraWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CEFC06BC2FD98B6700BA5A4D /* Build configuration list for PBXNativeTarget "AiraWidgetExtension" */;
+			buildPhases = (
+				CEFC06A82FD98B6700BA5A4D /* Sources */,
+				CEFC06A92FD98B6700BA5A4D /* Frameworks */,
+				CEFC06AA2FD98B6700BA5A4D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CEFC06AF2FD98B6700BA5A4D /* AiraWidget */,
+			);
+			name = AiraWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = AiraWidgetExtension;
+			productReference = CEFC06AC2FD98B6700BA5A4D /* AiraWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -363,7 +436,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2650;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					45DABC272FBC8BDB00C3A8C1 = {
@@ -388,6 +461,9 @@
 						CreatedOnToolsVersion = 26.1.1;
 						TestTargetID = 6993D7B82FB1FA44003E718C;
 					};
+					CEFC06AB2FD98B6700BA5A4D = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
 				};
 			};
 			buildConfigurationList = 6993D7B42FB1FA44003E718C /* Build configuration list for PBXProject "Aira" */;
@@ -411,6 +487,7 @@
 				45DABC272FBC8BDB00C3A8C1 /* AiraWatch Watch App */,
 				45DABC332FBC8BDC00C3A8C1 /* AiraWatch Watch AppTests */,
 				45DABC3D2FBC8BDC00C3A8C1 /* AiraWatch Watch AppUITests */,
+				CEFC06AB2FD98B6700BA5A4D /* AiraWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -452,6 +529,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6993D7CE2FB1FA45003E718C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEFC06AA2FD98B6700BA5A4D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -503,6 +587,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CEFC06A82FD98B6700BA5A4D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -530,6 +621,11 @@
 			isa = PBXTargetDependency;
 			target = 6993D7B82FB1FA44003E718C /* Aira */;
 			targetProxy = 6993D7D12FB1FA45003E718C /* PBXContainerItemProxy */;
+		};
+		CEFC06BA2FD98B6700BA5A4D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEFC06AB2FD98B6700BA5A4D /* AiraWidgetExtension */;
+			targetProxy = CEFC06B92FD98B6700BA5A4D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1015,6 +1111,71 @@
 			};
 			name = Release;
 		};
+		CEFC06BD2FD98B6700BA5A4D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AiraWidgetExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VKT97NG2T3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AiraWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AiraWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fajaraleid.Aira.AiraWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CEFC06BE2FD98B6700BA5A4D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AiraWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VKT97NG2T3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AiraWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AiraWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fajaraleid.Aira.AiraWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1077,6 +1238,15 @@
 			buildConfigurations = (
 				6993D7E12FB1FA45003E718C /* Debug */,
 				6993D7E22FB1FA45003E718C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CEFC06BC2FD98B6700BA5A4D /* Build configuration list for PBXNativeTarget "AiraWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEFC06BD2FD98B6700BA5A4D /* Debug */,
+				CEFC06BE2FD98B6700BA5A4D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

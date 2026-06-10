@@ -1,84 +1,193 @@
-//
-//  AiraWidget.swift
-//  AiraWidget
-//
-//  Created by fajer on 24/12/1447 AH.
-//
-
 import WidgetKit
 import SwiftUI
 
-struct Provider: TimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emoji: "😀")
-    }
-
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), emoji: "😀")
-        completion(entry)
-    }
-
-    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emoji: "😀")
-            entries.append(entry)
-        }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
-    }
-
-//    func relevances() async -> WidgetRelevances<Void> {
-//        // Generate a list containing the contexts this widget is relevant in.
-//    }
-}
+// MARK: - Data
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
-    let emoji: String
+    let score: Double
+    let scoreLabel: String
 }
 
-struct AiraWidgetEntryView : View {
+
+// MARK: - Provider
+
+struct Provider: TimelineProvider {
+
+    func placeholder(in context: Context) -> SimpleEntry {
+        SimpleEntry(
+            date: Date(),
+            score: 52,
+            scoreLabel: "Moderate"
+        )
+    }
+
+
+    func getSnapshot(
+        in context: Context,
+        completion: @escaping (SimpleEntry) -> Void
+    ) {
+        completion(loadEntry())
+    }
+
+
+    func getTimeline(
+        in context: Context,
+        completion: @escaping (Timeline<SimpleEntry>) -> Void
+    ) {
+
+        let entry = loadEntry()
+
+        let timeline = Timeline(
+            entries: [entry],
+            policy: .after(Date().addingTimeInterval(60))
+        )
+
+        completion(timeline)
+    }
+
+
+    func loadEntry() -> SimpleEntry {
+
+        let defaults = UserDefaults(
+            suiteName: "group.com.fajr.aleid.Aira"
+        )
+
+
+        let savedScore = defaults?.object(
+            forKey: "riskScore"
+        ) as? Double
+
+
+        let score = savedScore ?? 0
+
+
+        let label = defaults?.string(
+            forKey: "riskLabel"
+        ) ?? "No Data"
+
+
+        return SimpleEntry(
+            date: Date(),
+            score: score,
+            scoreLabel: label
+        )
+    }
+}
+
+
+
+// MARK: - Widget UI
+
+struct AiraWidgetView: View {
+
     var entry: Provider.Entry
 
-    var body: some View {
-        VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
 
-            Text("Emoji:")
-            Text(entry.emoji)
+    var body: some View {
+
+        VStack(spacing: 8) {
+
+
+            Text("Asthma Risk")
+                .font(.headline)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
+
+
+            ZStack {
+
+
+                Circle()
+                    .stroke(
+                        Color.gray.opacity(0.25),
+                        lineWidth: 9
+                    )
+
+
+                Circle()
+                    .trim(
+                        from: 0,
+                        to: entry.score / 100
+                    )
+                    .stroke(
+                        Color.blue,
+                        style: StrokeStyle(
+                            lineWidth: 9,
+                            lineCap: .round
+                        )
+                    )
+                    .rotationEffect(
+                        .degrees(-90)
+                    )
+
+
+
+                VStack(spacing: 2) {
+
+
+                    Text("\(Int(entry.score))%")
+                        .font(
+                            .system(
+                                size: 25,
+                                weight: .bold
+                            )
+                        )
+
+
+                    Text(entry.scoreLabel)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+            }
+            .frame(
+                width: 105,
+                height: 105
+            )
+
         }
+        .padding()
+        .containerBackground(
+            .fill.tertiary,
+            for: .widget
+        )
     }
 }
+
+
+
+// MARK: - Widget
 
 struct AiraWidget: Widget {
-    let kind: String = "AiraWidget"
+
+
+    let kind = "AiraWidget"
+
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            if #available(iOS 17.0, *) {
-                AiraWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
-            } else {
-                AiraWidgetEntryView(entry: entry)
-                    .padding()
-                    .background()
-            }
-        }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
-    }
-}
 
-#Preview(as: .systemSmall) {
-    AiraWidget()
-} timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
+
+        StaticConfiguration(
+            kind: kind,
+            provider: Provider()
+        ) { entry in
+
+
+            AiraWidgetView(
+                entry: entry
+            )
+
+
+        }
+        .configurationDisplayName("Aira")
+        .description(
+            "Asthma risk overview"
+        )
+        .supportedFamilies([
+            .systemSmall
+        ])
+    }
 }

@@ -4,7 +4,6 @@
 //
 //  Created by fajer on 24/12/1447 AH.
 //
-
 import WidgetKit
 import SwiftUI
 
@@ -12,6 +11,5 @@ import SwiftUI
 struct AiraWidgetBundle: WidgetBundle {
     var body: some Widget {
         AiraWidget()
-        AiraWidgetLiveActivity()
     }
 }

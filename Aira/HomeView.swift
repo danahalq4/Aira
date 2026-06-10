@@ -195,22 +195,31 @@ struct HomeView: View {
 
 
                     SymptomsListView(
-
-                        symptoms:
-                            symptomsForDay,
-
+                        symptoms: symptomsForDay,
 
                         deleteAction: { symptom in
 
+                            if let log = symptomLogs.first(where: {
+                                $0.name == symptom.name &&
+                                Calendar.current.isDate(
+                                    $0.date,
+                                    inSameDayAs: viewModel.calendarVM.selectedDate
+                                )
+                            }) {
+                                modelContext.delete(log)
+
+                                do {
+                                    try modelContext.save()
+                                    print("SYMPTOM DELETED")
+                                } catch {
+                                    print("DELETE ERROR:", error.localizedDescription)
+                                }
+                            }
 
                             viewModel.symptomsVM.delete(
-
                                 symptom,
-
-                                on:
-                                    viewModel.calendarVM.selectedDate
+                                on: viewModel.calendarVM.selectedDate
                             )
-
                         }
                     )
                     .padding(.horizontal,16)
@@ -264,22 +273,7 @@ struct HomeView: View {
 
 
 
-                // يخلي الاختيار واللون والواجهة زي قبل
-                viewModel.symptomsVM.addMany(
-
-                    names:
-                        Array(selectedNames),
-
-                    severity:
-                        severity,
-
-                    time:
-                        startTime,
-
-                    on:
-                        viewModel.calendarVM.selectedDate
-                )
-
+               
 
 
 

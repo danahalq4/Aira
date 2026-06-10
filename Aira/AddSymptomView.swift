@@ -43,7 +43,7 @@ struct AddSymptomView: View {
     ]
     private let otherKey = "Other"
     private var allOptions: [String] {
-        return defaultSymptomsBase + [otherKey]
+        return defaultSymptomsBase + customSymptoms + [otherKey]
     }
 
     // Hoist columns to a property to avoid recomputation inside the builder

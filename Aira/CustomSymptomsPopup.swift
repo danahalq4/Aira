@@ -78,15 +78,25 @@ struct CustomSymptomsPopup: View {
         let candidate = trimmedNew
         guard !candidate.isEmpty else { return }
 
-        if customSymptoms.contains(where: { $0.caseInsensitiveCompare(candidate) == .orderedSame }) {
+        if customSymptoms.contains(where: {
+            $0.caseInsensitiveCompare(candidate) == .orderedSame
+        }) {
             showDuplicateAlert = true
             return
         }
 
         customSymptoms.append(candidate)
+
+        UserDefaults.standard.set(
+            customSymptoms,
+            forKey: "customSymptoms"
+        )
+
         selectedSymptoms.insert(candidate)
-        onImmediateAdd(candidate)
+
+
         newSymptom = ""
+
         dismiss()
     }
 
